@@ -7,11 +7,48 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
     <meta name="theme-color" content="#FBFBFA" />
-    <meta property="og:title" content="김종학 ♥ 임소현" />
+    <!-- ③ 캐시 방지 -->
+    <meta
+      http-equiv="Cache-Control"
+      content="no-cache, no-store, must-revalidate"
+    />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <!-- ════════════════════════════════════════════════════
+         Open Graph — 카카오톡 / SNS 공유 미리보기
+         ┌──────────────────────────────────────────────┐
+         │  og:image 는 반드시 절대 URL (HTTPS) 이어야   │
+         │  합니다. 아래 URL 을 실제 배포 주소로 확인    │
+         │  하고, 이미지 해상도는 1200×630px 권장.       │
+         └──────────────────────────────────────────────┘
+    ════════════════════════════════════════════════════ -->
+    <!-- 기본 OG -->
+    <meta property="og:type"        content="website" />
+    <meta property="og:locale"      content="ko_KR" />
+    <meta property="og:site_name"   content="김종학 ♥ 임소현 청첩장" />
+    <meta property="og:title"       content="김종학 ♥ 임소현" />
     <meta
       property="og:description"
-      content="2026년 10월 4일, 저희 두 사람이 하나가 됩니다."
+      content="2026년 10월 4일 일요일 오후 2시 30분 · 더채플앳논현 6F 라포레홀 — 두 사람의 결혼을 축하해주세요 🤍"
     />
+    <meta
+      property="og:url"
+      content="https://belkrane.github.io/H1004DAY/"
+    />
+    <!-- 썸네일 이미지 (카카오톡 미리보기 핵심) -->
+    <!-- ⚠ 이미지 파일이 실제 존재하는지 확인 후 사용 -->
+    <meta
+      property="og:image"
+      content="https://belkrane.github.io/H1004DAY/src/img/header.PNG"
+    />
+    <!--
+      실제 이미지 크기(px)를 아래에 맞게 수정하세요.
+      사이즈를 명시하면 카카오톡이 레이아웃을 미리 잡아
+      로딩이 빨라집니다. 1200×630 을 권장합니다.
+    -->
+    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt"    content="김종학 & 임소현 결혼식 2026.10.04" />
     <title>김종학 ♥ 임소현</title>
 
     <!-- Fonts: Playfair Display (serif) + Noto Sans KR (sans) -->
@@ -25,22 +62,25 @@
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css?v=20260523" />
   </head>
   <body>
     <!-- ════════════════════════════════════════════
          ① HERO
     ════════════════════════════════════════════ -->
     <section id="hero" class="hero">
+      <!-- ① 꽃잎 파티클 캔버스 (JS가 <div class="petal"> 생성) -->
+      <div class="petals-canvas" id="petals-canvas" aria-hidden="true"></div>
+
       <!-- ── 메인 사진
            실제 사진으로 교체 시 src 값만 변경하세요.
            예) src="src/img/your-photo.jpg"
       ── -->
       <div class="hero__photo">
         <img
-          src="this.src='src/img/PYD00030.jpg"
+          src="this.src='src/img/header.PNG"
           alt="커플 메인 사진"
-          onerror="this.src='src/img/PYD00062.jpg'"
+          onerror="this.src='src/img/header.PNG'"
         />
       </div>
 
@@ -53,26 +93,93 @@
           <span>임소현</span>
         </h1>
         <div class="hero__rule"></div>
-        <p class="hero__date">2026 · 10 · 04 &nbsp;<em>Sun.</em></p>
+        <p class="hero__date">2026 · 10 · 04 &nbsp;<em>Sun.</em>&nbsp;14:30</p>
         <p class="hero__venue">더채플앳논현 6F 라포레홀</p>
-
-        <!-- D-Day 카운트다운 -->
-        <div class="countdown" id="countdown" aria-live="polite">
-          <div class="countdown__col">
-            <span id="cnt-days">--</span><small>일</small>
-          </div>
-          <div class="countdown__sep" aria-hidden="true"></div>
-          <div class="countdown__col">
-            <span id="cnt-hours">--</span><small>시간</small>
-          </div>
-          <div class="countdown__sep" aria-hidden="true"></div>
-          <div class="countdown__col">
-            <span id="cnt-mins">--</span><small>분</small>
-          </div>
-          <div class="countdown__sep" aria-hidden="true"></div>
-          <div class="countdown__col">
-            <span id="cnt-secs">--</span><small>초</small>
-          </div>
+        <!-- ② 2026년 10월 달력 -->
+        <div class="hero__cal">
+          <p class="hero__cal-label">October · 2026</p>
+          <table
+            class="hero__cal-table"
+            role="presentation"
+            aria-label="2026년 10월 달력"
+          >
+            <thead>
+              <tr>
+                <th>S</th>
+                <th>M</th>
+                <th>T</th>
+                <th>W</th>
+                <th>T</th>
+                <th>F</th>
+                <th>S</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+              </tr>
+              <tr>
+                <td><span class="cal-wedding">4</span></td>
+                <td>5</td>
+                <td>6</td>
+                <td>7</td>
+                <td>8</td>
+                <td>9</td>
+                <td>10</td>
+              </tr>
+              <tr>
+                <td>11</td>
+                <td>12</td>
+                <td>13</td>
+                <td>14</td>
+                <td>15</td>
+                <td>16</td>
+                <td>17</td>
+              </tr>
+              <tr>
+                <td>18</td>
+                <td>19</td>
+                <td>20</td>
+                <td>21</td>
+                <td>22</td>
+                <td>23</td>
+                <td>24</td>
+              </tr>
+              <tr>
+                <td>25</td>
+                <td>26</td>
+                <td>27</td>
+                <td>28</td>
+                <td>29</td>
+                <td>30</td>
+                <td>31</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- D-Day 카운트다운 -->
+      <div class="countdown" id="countdown" aria-live="polite">
+        <div class="countdown__col">
+          <span id="cnt-days">--</span><small>일</small>
+        </div>
+        <div class="countdown__sep" aria-hidden="true"></div>
+        <div class="countdown__col">
+          <span id="cnt-hours">--</span><small>시간</small>
+        </div>
+        <div class="countdown__sep" aria-hidden="true"></div>
+        <div class="countdown__col">
+          <span id="cnt-mins">--</span><small>분</small>
+        </div>
+        <div class="countdown__sep" aria-hidden="true"></div>
+        <div class="countdown__col">
+          <span id="cnt-secs">--</span><small>초</small>
         </div>
       </div>
 
@@ -110,12 +217,18 @@
         <div class="greeting__family">
           <div class="family-col">
             <span class="family-label">신랑 측</span>
-            <p>김 택명 · 곽 미희의 장남 <strong>종학</strong></p>
+            <p>
+              김 택명 · 곽 미희의 장남<br />
+              <strong>종학</strong>
+            </p>
           </div>
           <div class="family-divider"></div>
           <div class="family-col">
             <span class="family-label">신부 측</span>
-            <p>임 성순 · 안 정숙의 장녀 <strong>소현</strong></p>
+            <p>
+              임 성순 · 안 정숙의 장녀<br />
+              <strong>소현</strong>
+            </p>
           </div>
         </div>
       </div>
@@ -213,9 +326,7 @@
 
         <div class="venue-card">
           <p class="venue-name">더채플앳논현 6F 라포레홀</p>
-          <p class="venue-addr">
-            서울특별시 강남구 논현로 842<br />더채플앳논현 6층
-          </p>
+          <p class="venue-addr">서울특별시 강남구 논현로 842</p>
         </div>
 
         <!-- 지도 미리보기: iframe 또는 이미지로 교체 가능 -->
@@ -554,18 +665,6 @@
             />
             <label for="rsvp-name">이름 <span class="req">*</span></label>
           </div>
-          <div class="field">
-            <input
-              type="tel"
-              id="rsvp-phone"
-              name="phone"
-              placeholder=" "
-              required
-              autocomplete="tel"
-              inputmode="tel"
-            />
-            <label for="rsvp-phone">연락처 <span class="req">*</span></label>
-          </div>
 
           <fieldset class="fieldset">
             <legend>참석 여부 <span class="req">*</span></legend>
@@ -602,22 +701,6 @@
             </div>
           </fieldset>
 
-          <fieldset class="fieldset">
-            <legend>버스 탑승</legend>
-            <div class="chip-group">
-              <label class="chip"
-                ><input type="radio" name="bus" value="없음" checked /><span
-                  >직접 갈게요</span
-                ></label
-              >
-              <label class="chip"
-                ><input type="radio" name="bus" value="인천" /><span
-                  >인천 버스</span
-                ></label
-              >
-            </div>
-          </fieldset>
-
           <div class="field">
             <select id="rsvp-guests" name="guests">
               <option value="1">본인만 (1명)</option>
@@ -626,16 +709,6 @@
               <option value="4">+3명 이상</option>
             </select>
             <label for="rsvp-guests">동반 인원</label>
-          </div>
-
-          <div class="field">
-            <textarea
-              id="rsvp-msg"
-              name="message"
-              placeholder=" "
-              rows="3"
-            ></textarea>
-            <label for="rsvp-msg">메시지 (선택)</label>
           </div>
 
           <button
@@ -661,6 +734,116 @@
         <a href="tel:01021232354"><i data-lucide="phone"></i>신부에게 연락</a>
       </div>
     </footer>
+
+    <!-- ════════════════════════════════════════════
+         ④ RSVP 팝업 모달 (페이지 진입 시 자동 오픈)
+    ════════════════════════════════════════════ -->
+    <div
+      class="rsvp-modal"
+      id="rsvp-modal"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="rsvp-modal-title"
+    >
+      <div class="rsvp-modal__backdrop" id="rsvp-modal-backdrop"></div>
+      <div class="rsvp-modal__box">
+        <button
+          class="rsvp-modal__close"
+          id="rsvp-modal-close"
+          type="button"
+          aria-label="닫기"
+        >
+          <i data-lucide="x"></i>
+        </button>
+
+        <div class="rsvp-modal__head">
+          <span class="section-tag">RSVP</span>
+          <h2 id="rsvp-modal-title">참석 의사 표시</h2>
+          <p class="rsvp__note">
+            원활한 준비를 위해 참석 여부를 알려주시면 감사하겠습니다.
+          </p>
+        </div>
+
+        <form
+          id="rsvp-m-form"
+          class="rsvp-form"
+          action="https://formspree.io/f/YOUR_FORM_ID"
+          method="POST"
+          novalidate
+        >
+          <div class="field">
+            <input
+              type="text"
+              id="rsvp-m-name"
+              name="name"
+              placeholder=" "
+              required
+              autocomplete="name"
+            />
+            <label for="rsvp-m-name">이름 <span class="req">*</span></label>
+          </div>
+
+          <fieldset class="fieldset">
+            <legend>참석 여부 <span class="req">*</span></legend>
+            <div class="chip-group">
+              <label class="chip"
+                ><input
+                  type="radio"
+                  name="m-attendance"
+                  value="참석"
+                  required
+                /><span>참석</span></label
+              >
+              <label class="chip"
+                ><input type="radio" name="m-attendance" value="불참" /><span
+                  >불참</span
+                ></label
+              >
+            </div>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend>식사 여부</legend>
+            <div class="chip-group">
+              <label class="chip"
+                ><input type="radio" name="m-meal" value="식사" /><span
+                  >식사 할게요</span
+                ></label
+              >
+              <label class="chip"
+                ><input type="radio" name="m-meal" value="패스" /><span
+                  >괜찮아요</span
+                ></label
+              >
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <select id="rsvp-m-guests" name="guests">
+              <option value="1">본인만 (1명)</option>
+              <option value="2">+1명 (2명)</option>
+              <option value="3">+2명 (3명)</option>
+              <option value="4">+3명 이상</option>
+            </select>
+            <label for="rsvp-m-guests">동반 인원</label>
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn--dark btn--full"
+            id="rsvp-m-submit"
+          >
+            참석 의사 전달하기
+          </button>
+          <p class="rsvp-form__result" id="rsvp-m-result" role="alert"></p>
+        </form>
+
+        <button type="button" class="rsvp-modal__skip" id="rsvp-modal-skip">
+          나중에 할게요
+        </button>
+      </div>
+    </div>
 
     <!-- Toast 알림 -->
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -693,6 +876,6 @@
       </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=20260523"></script>
   </body>
 </html>

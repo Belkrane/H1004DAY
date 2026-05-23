@@ -303,6 +303,90 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   flex-shrink: 0;
 }
 
+/* ── Hero Mini Calendar ───────────────────────────────── */
+.hero__cal {
+  margin-top: 22px;
+  width: 100%;
+  max-width: 300px;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+.hero__cal-label {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.64rem;
+  letter-spacing: 0.28em;
+  color: var(--muted);
+  text-align: center;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+.hero__cal-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.hero__cal-table th {
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.58rem;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  text-align: center;
+  padding: 2px 0 8px;
+  font-weight: 400;
+}
+.hero__cal-table td {
+  font-family: var(--serif);
+  font-size: 0.78rem;
+  text-align: center;
+  padding: 4px 0;
+  color: var(--text-2);
+  line-height: 1.2;
+}
+/* Sunday column: soft rose */
+.hero__cal-table th:first-child,
+.hero__cal-table td:first-child { color: #c4a0a0; }
+/* Wedding day highlight */
+.cal-wedding {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: var(--text);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.78rem;
+  line-height: 1;
+}
+
+/* ── Floating Petals ──────────────────────────────────── */
+.petals-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 10;
+}
+.petal {
+  position: absolute;
+  top: -20px;
+  background: rgba(255,255,255,0.82);
+  border-radius: 50% 0 50% 0;
+  animation: petal-fall linear infinite;
+  will-change: transform, opacity;
+}
+@keyframes petal-fall {
+  0%   { transform: translateY(-20px)  rotate(0deg)   translateX(0);    opacity: 0;   }
+  6%   { opacity: .9;  }
+  28%  { transform: translateY(24vh)   rotate(110deg) translateX(16px); }
+  55%  { transform: translateY(52vh)   rotate(250deg) translateX(-14px);}
+  78%  { transform: translateY(75vh)   rotate(380deg) translateX(20px); }
+  94%  { opacity: .45; }
+  100% { transform: translateY(112vh)  rotate(500deg) translateX(6px);  opacity: 0;   }
+}
+
 /* Scroll cue */
 .hero__scroll {
   position: absolute;
@@ -1051,7 +1135,88 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
 }
 .pw-modal__actions .btn { flex: 1; padding: 12px; font-size: 0.78rem; }
 
-/* ── 18. Responsive ───────────────────────────────────────── */
+/* ── 18. RSVP Modal ──────────────────────────────────────── */
+.rsvp-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 5000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.rsvp-modal[hidden] { display: none; }
+.rsvp-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(10,10,10,.55);
+  animation: fade-in .3s ease both;
+}
+.rsvp-modal__box {
+  position: relative;
+  z-index: 1;
+  background: var(--bg-white);
+  width: 100%;
+  max-width: 480px;
+  max-height: 92svh;
+  max-height: 92vh;
+  overflow-y: auto;
+  padding: 48px 28px 28px;
+  animation: img-pop .32s ease both;
+  -webkit-overflow-scrolling: touch;
+}
+.rsvp-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  transition: color var(--dur) ease;
+}
+.rsvp-modal__close:hover { color: var(--text); }
+.rsvp-modal__close svg { width: 20px; height: 20px; stroke-width: 1.5; }
+.rsvp-modal__head {
+  text-align: center;
+  margin-bottom: 28px;
+}
+.rsvp-modal__head h2 {
+  font-family: var(--sans);
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: var(--text);
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+.rsvp-modal__head .rsvp__note { margin-bottom: 0; font-size: 0.83rem; }
+.rsvp-modal__skip {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  margin-top: 14px;
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  cursor: pointer;
+  text-align: center;
+  padding: 8px 0 4px;
+  -webkit-tap-highlight-color: transparent;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--line);
+  transition: color var(--dur) ease;
+}
+.rsvp-modal__skip:hover { color: var(--text-2); }
+
+/* ── 19. Responsive ───────────────────────────────────────── */
 @media (min-width: 480px) {
   .hero__photo img { height: 56vw; max-height: 540px; }
   .hero__names { font-size: 2.4rem; }

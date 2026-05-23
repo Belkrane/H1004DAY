@@ -4,6 +4,27 @@
    ============================================================ */
 'use strict';
 
+/* ── ZOOM PREVENTION ─────────────────────────────────────────
+   viewport meta (user-scalable=no) is sufficient for most
+   browsers, but iOS 10+ re-enables zoom — block it with JS.
+   ─────────────────────────────────────────────────────────── */
+(function preventZoom() {
+  /* Block pinch-to-zoom (multi-touch move) */
+  document.addEventListener('touchmove', function(e) {
+    if (e.touches && e.touches.length > 1) e.preventDefault();
+  }, { passive: false });
+
+  /* Block double-tap zoom (two taps within 300 ms) */
+  var _lastTap = 0;
+  document.addEventListener('touchend', function(e) {
+    var now = Date.now();
+    if (now - _lastTap < 300) {
+      e.preventDefault();
+    }
+    _lastTap = now;
+  }, { passive: false });
+}());
+
 /* ── CONFIG ──────────────────────────────────────────────────
    결혼식 정보를 여기서 수정하세요.
    ─────────────────────────────────────────────────────────── */
@@ -83,6 +104,35 @@ function initIcons() {
   }, { threshold: 0.08 });
 
   $$('.reveal').forEach(function(el) { observer.observe(el); });
+}());
+
+/* ── PETALS ──────────────────────────────────────────────────
+   Creates N <div class="petal"> elements inside #petals-canvas.
+   Size, position, duration, delay are randomised per petal.
+   ─────────────────────────────────────────────────────────── */
+(function initPetals() {
+  var canvas = document.getElementById('petals-canvas');
+  if (!canvas) return;
+
+  var N = 22;
+  for (var i = 0; i < N; i++) {
+    var p = document.createElement('div');
+    p.className = 'petal';
+
+    var size  = 6  + Math.random() * 9;          /* 6–15 px        */
+    var left  = Math.random() * 106 - 3;          /* -3 % – 103 %   */
+    var dur   = 10 + Math.random() * 12;          /* 10–22 s        */
+    var delay = -Math.random() * 20;              /* already in-flight */
+
+    p.style.cssText =
+      'left:'               + left.toFixed(1)  + '%;' +
+      'width:'              + size.toFixed(1)  + 'px;' +
+      'height:'             + size.toFixed(1)  + 'px;' +
+      'animation-duration:' + dur.toFixed(1)   + 's;' +
+      'animation-delay:'    + delay.toFixed(1) + 's;';
+
+    canvas.appendChild(p);
+  }
 }());
 
 /* ── GALLERY MODAL ───────────────────────────────────────────*/
@@ -406,6 +456,100 @@ function initIcons() {
       }
     }).catch(function(err) {
       if (result) { result.textContent = '전송에 실패했습니다. 다시 시도해주세요.'; result.className = 'rsvp-form__result err'; }
+      toast('전송 실패. 다시 시도해주세요.');
+    }).finally(function() {
+      btn.disabled = false;
+      btn.textContent = '참석 의사 전달하기';
+    });
+  });
+}());
+
+/* ── RSVP MODAL (auto-open on page load) ─────────────────────
+   Opens 400 ms after page load so the page has time to paint.
+   Closes on ✕ button / backdrop click / Esc / skip link.
+   On successful Formspree submit, auto-closes after 2 s.
+   ─────────────────────────────────────────────────────────── */
+(function initRSVPModal() {
+  var modal    = document.getElementById('rsvp-modal');
+  var backdrop = document.getElementById('rsvp-modal-backdrop');
+  var btnClose = document.getElementById('rsvp-modal-close');
+  var btnSkip  = document.getElementById('rsvp-modal-skip');
+  var form     = document.getElementById('rsvp-m-form');
+  var result   = document.getElementById('rsvp-m-result');
+  var btn      = document.getElementById('rsvp-m-submit');
+  if (!modal) return;
+
+  function openModal() {
+    modal.removeAttribute('hidden');
+    document.body.style.overflow = 'hidden';
+    /* Ensure lucide icons inside modal are rendered */
+    if (window.lucide && typeof lucide.createIcons === 'function') {
+      lucide.createIcons({ nodes: [modal] });
+    }
+  }
+
+  function closeModal() {
+    modal.setAttribute('hidden', '');
+    document.body.style.overflow = '';
+  }
+
+  /* Auto-open: 400 ms delay lets the page render first */
+  setTimeout(openModal, 400);
+
+  /* Close triggers */
+  if (btnClose)  btnClose.addEventListener('click', closeModal);
+  if (btnSkip)   btnSkip.addEventListener('click', closeModal);
+  if (backdrop)  backdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', function(e) {
+    if (!modal.hasAttribute('hidden') && e.key === 'Escape') closeModal();
+  });
+
+  /* Form submit */
+  if (!form) return;
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    var nameEl  = document.getElementById('rsvp-m-name');
+    var phoneEl = document.getElementById('rsvp-m-phone');
+    var att     = form.querySelector('input[name="m-attendance"]:checked');
+
+    if (!nameEl.value.trim())  { toast('이름을 입력해주세요.');  nameEl.focus();  return; }
+    if (!phoneEl.value.trim()) { toast('연락처를 입력해주세요.'); phoneEl.focus(); return; }
+    if (!att)                  { toast('참석 여부를 선택해주세요.'); return; }
+
+    /* Demo mode */
+    if (form.action.includes('YOUR_FORM_ID')) {
+      if (result) {
+        result.textContent = '(데모) 전달 완료! Formspree ID를 교체해주세요.';
+        result.className = 'rsvp-form__result ok';
+      }
+      toast('✓ 전달 완료 (데모 모드)');
+      setTimeout(closeModal, 1800);
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '전송 중…';
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { Accept: 'application/json' },
+    }).then(function(res) {
+      if (res.ok) {
+        if (result) {
+          result.textContent = '참석 의사가 전달되었습니다. 감사합니다.';
+          result.className = 'rsvp-form__result ok';
+        }
+        toast('✓ 전달 완료!');
+        form.reset();
+        setTimeout(closeModal, 2000);
+      } else {
+        throw new Error('server');
+      }
+    }).catch(function() {
+      if (result) {
+        result.textContent = '전송 실패. 다시 시도해주세요.';
+        result.className = 'rsvp-form__result err';
+      }
       toast('전송 실패. 다시 시도해주세요.');
     }).finally(function() {
       btn.disabled = false;
