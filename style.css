@@ -12,7 +12,7 @@
   --bg-stone:  #F0EBE3;   /* 웜 우드 스톤 — 버스             */
   --bg-blush:  #F5EEE8;   /* 소프트 아이보리 — 마음 전하실 곳*/
   --bg-cool:   #F2EDE9;   /* 웜 페이퍼 — 방명록              */
-  --bg-deep:   #2A2520;   /* 딥 웜 차콜 — 날짜 섹션          */
+  --bg-deep:   #7A5438;   /* 미디엄 우드 — 날짜 섹션          */
 
   /* ── 우드 포인트 컬러 ────────────────────────────────── */
   --wood:      #A67B5B;   /* 기본 우드톤 (버튼, 포인트)      */
@@ -1156,6 +1156,7 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   letter-spacing: 0.08em;
   padding: 9px 18px;
   border: 1px solid var(--line);
+  border-radius: 10px;              /* 둥근 모서리 */
   color: var(--text-2);
   transition: background var(--dur) ease, color var(--dur) ease, border-color var(--dur) ease;
 }
@@ -1363,6 +1364,16 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   transition: color var(--dur) ease;
 }
 .rsvp-modal__skip:hover { color: var(--text-2); }
+
+/* 모달 내 칩: 2열 그리드로 modal width 가득 채움 */
+.rsvp-modal .chip-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.rsvp-modal .chip span {
+  display: block;
+  text-align: center;
+}
 
 /* ── 19. Responsive ───────────────────────────────────────── */
 @media (min-width: 480px) {
