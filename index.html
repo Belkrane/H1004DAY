@@ -17,40 +17,7 @@
 </head>
 <body>
 
-  <!-- ① HERO -->
-  <section id="hero" class="section hero">
-    <div class="hero__petals" aria-hidden="true">
-      <span></span><span></span><span></span><span></span><span></span>
-      <span></span><span></span><span></span><span></span><span></span>
-    </div>
-    <div class="hero__content fade-in">
-      <p class="hero__label">We're Getting Married</p>
-      <div class="hero__photo-frame">
-        <!-- 커플 사진을 여기에 넣으세요. src를 실제 이미지 경로로 교체하세요. -->
-        <div class="hero__photo-placeholder" aria-label="커플 사진">
-          <span class="hero__photo-icon">💑</span>
-        </div>
-      </div>
-      <h1 class="hero__names">
-        <span class="groom">홍길동</span>
-        <span class="hero__heart">♥</span>
-        <span class="bride">김영희</span>
-      </h1>
-      <p class="hero__date">2025년 10월 4일 토요일 오후 2시</p>
-      <p class="hero__venue">그랜드 볼룸 웨딩홀</p>
-      <div class="countdown" id="countdown" aria-live="polite">
-        <div class="countdown__item"><span id="cnt-days">--</span><small>일</small></div>
-        <div class="countdown__item"><span id="cnt-hours">--</span><small>시간</small></div>
-        <div class="countdown__item"><span id="cnt-mins">--</span><small>분</small></div>
-        <div class="countdown__item"><span id="cnt-secs">--</span><small>초</small></div>
-      </div>
-    </div>
-    <a href="#greeting" class="scroll-down" aria-label="아래로 스크롤">
-      <span></span>
-    </a>
-  </section>
-
-  <!-- ② GREETING -->
+  <!-- ① GREETING -->
   <section id="greeting" class="section greeting">
     <div class="container fade-in">
       <div class="section-title">
@@ -85,6 +52,39 @@
         </div>
       </div>
     </div>
+  </section>
+
+  <!-- ② HERO -->
+  <section id="hero" class="section hero">
+    <div class="hero__petals" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+    <div class="hero__content fade-in">
+      <p class="hero__label">We're Getting Married</p>
+      <div class="hero__photo-frame">
+        <!-- 커플 사진을 여기에 넣으세요. src를 실제 이미지 경로로 교체하세요. -->
+        <div class="hero__photo-placeholder" aria-label="커플 사진">
+          <span class="hero__photo-icon">💑</span>
+        </div>
+      </div>
+      <h1 class="hero__names">
+        <span class="groom">홍길동</span>
+        <span class="hero__heart">♥</span>
+        <span class="bride">김영희</span>
+      </h1>
+      <p class="hero__date">2025년 10월 4일 토요일 오후 2시</p>
+      <p class="hero__venue">그랜드 볼룸 웨딩홀</p>
+      <div class="countdown" id="countdown" aria-live="polite">
+        <div class="countdown__item"><span id="cnt-days">--</span><small>일</small></div>
+        <div class="countdown__item"><span id="cnt-hours">--</span><small>시간</small></div>
+        <div class="countdown__item"><span id="cnt-mins">--</span><small>분</small></div>
+        <div class="countdown__item"><span id="cnt-secs">--</span><small>초</small></div>
+      </div>
+    </div>
+    <a href="#calendar" class="scroll-down" aria-label="아래로 스크롤">
+      <span></span>
+    </a>
   </section>
 
   <!-- ③ CALENDAR -->
