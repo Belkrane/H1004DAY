@@ -1,477 +1,419 @@
 /* ============================================================
-   script.js — H1004DAY Wedding Invitation
+   script.js — Copenhagen Wedding Invitation
+   Vanilla JS only · No external libraries
    ============================================================ */
-
 'use strict';
 
-/* ── CONFIG ─────────────────────────────────────────────────
-   이곳에서 결혼식 정보를 수정하세요.
+/* ── CONFIG ──────────────────────────────────────────────────
+   결혼식 정보를 여기서 수정하세요.
    ─────────────────────────────────────────────────────────── */
-const CONFIG = {
-  groomName:       '홍길동',
-  brideName:       '김영희',
-  weddingDate:     new Date('2026-10-04T14:00:00'), // 결혼식 날짜/시간
-  calendarYear:    2026,
-  calendarMonth:   10,   // 1~12
-  weddingDay:      4,    // 달력에서 강조할 날
-  venueName:       '그랜드 볼룸 웨딩홀',
-  venueAddress:    '서울특별시 강남구 테헤란로 123 그랜드타워 B2F',
-  kakaoMapUrl:     'https://map.kakao.com/link/search/그랜드볼룸웨딩홀',
-  naverMapUrl:     'https://map.naver.com/v5/search/그랜드볼룸웨딩홀',
-  groomPhone:      '01012345678',
-  bridePhone:      '01087654321',
-  rsvpDeadline:    '9월 20일',
-  guestbookStorageKey: 'h1004day_guestbook',
+var CONFIG = {
+  weddingDate:      new Date('2026-10-04T14:30:00'),
+  guestbookKey:     'h1004day_gb_v2',
 };
 
-/* ── UTILS ───────────────────────────────────────────────── */
-function $(sel, ctx = document) { return ctx.querySelector(sel); }
-function $$(sel, ctx = document) { return Array.from(ctx.querySelectorAll(sel)); }
-
+/* ── UTILS ───────────────────────────────────────────────────*/
+var $ = function(sel, ctx) { return (ctx || document).querySelector(sel); };
+var $$ = function(sel, ctx) { return Array.from((ctx || document).querySelectorAll(sel)); };
 function pad(n) { return String(n).padStart(2, '0'); }
-
-function formatDate(d) {
-  const yyyy = d.getFullYear();
-  const mm   = pad(d.getMonth() + 1);
-  const dd   = pad(d.getDate());
-  const hh   = pad(d.getHours());
-  const min  = pad(d.getMinutes());
-  return `${yyyy}.${mm}.${dd} ${hh}:${min}`;
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
 }
 
-let toastTimer = null;
-function showToast(msg, duration = 2500) {
-  const el = $('#toast');
+/* Toast */
+var _toastTimer = null;
+function toast(msg, ms) {
+  var el = $('#toast');
   if (!el) return;
   el.textContent = msg;
   el.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), duration);
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(function() { el.classList.remove('show'); }, ms || 2600);
 }
 
-/* ── COUNTDOWN ───────────────────────────────────────────── */
+/* ── LUCIDE ICONS ─────────────────────────────────────────── */
+/* Initialise all data-lucide icons in the document            */
+function initIcons() {
+  if (window.lucide && typeof lucide.createIcons === 'function') {
+    lucide.createIcons();
+  }
+}
+
+/* ── COUNTDOWN ───────────────────────────────────────────────*/
 (function initCountdown() {
-  const days  = $('#cnt-days');
-  const hours = $('#cnt-hours');
-  const mins  = $('#cnt-mins');
-  const secs  = $('#cnt-secs');
-  if (!days) return;
+  var dEl = $('#cnt-days'), hEl = $('#cnt-hours'),
+      mEl = $('#cnt-mins'), sEl = $('#cnt-secs');
+  if (!dEl) return;
 
   function tick() {
-    const now  = Date.now();
-    const diff = CONFIG.weddingDate.getTime() - now;
-
+    var diff = CONFIG.weddingDate - Date.now();
     if (diff <= 0) {
-      // D-Day 당일
-      days.textContent  = '🎊';
-      hours.textContent = '🎊';
-      mins.textContent  = '🎊';
-      secs.textContent  = '🎊';
-      // 카운트다운 박스 전체에 D-Day 표시
       var box = $('#countdown');
-      if (box) {
-        box.innerHTML = '<p style="font-size:1.1rem;color:#E8B4B8;font-weight:600;letter-spacing:.05em;">🎊 D - Day 🎊</p>';
-      }
-      clearInterval(timer);
+      if (box) box.innerHTML = '<p style="font-family:var(--serif);font-style:italic;font-size:.9rem;letter-spacing:.1em;color:var(--muted);">D - Day</p>';
       return;
     }
-
-    const totalSec = Math.floor(diff / 1000);
-    const d = Math.floor(totalSec / 86400);
-    const h = Math.floor((totalSec % 86400) / 3600);
-    const m = Math.floor((totalSec % 3600) / 60);
-    const s = totalSec % 60;
-
-    days.textContent  = d;
-    hours.textContent = pad(h);
-    mins.textContent  = pad(m);
-    secs.textContent  = pad(s);
+    var s = Math.floor(diff / 1000);
+    dEl.textContent = Math.floor(s / 86400);
+    hEl.textContent = pad(Math.floor(s % 86400 / 3600));
+    mEl.textContent = pad(Math.floor(s % 3600 / 60));
+    sEl.textContent = pad(s % 60);
   }
-
   tick();
-  const timer = setInterval(tick, 1000);
-})();
+  setInterval(tick, 1000);
+}());
 
-/* ── CALENDAR ────────────────────────────────────────────── */
-(function initCalendar() {
-  const container = $('#cal-render');
-  if (!container) return;
+/* ── SCROLL REVEAL (IntersectionObserver) ────────────────────
+   Progressive enhancement:
+   - JS adds 'io-ready' to <html> → CSS sets initial opacity:0
+   - Observer adds 'in-view' when element enters viewport
+   - Without JS / on error → content is always visible         */
+(function initReveal() {
+  if (!('IntersectionObserver' in window)) return;
+  document.documentElement.classList.add('io-ready');
 
-  const { calendarYear: year, calendarMonth: month, weddingDay } = CONFIG;
-  const today = new Date();
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('in-view');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.08 });
 
-  const MONTH_KR = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-  const DAYS_KR  = ['일','월','화','수','목','금','토'];
+  $$('.reveal').forEach(function(el) { observer.observe(el); });
+}());
 
-  // First weekday of the month (0=Sun)
-  const firstDay  = new Date(year, month - 1, 1).getDay();
-  // Last date of the month
-  const lastDate  = new Date(year, month, 0).getDate();
-
-  // Header
-  const header = document.createElement('div');
-  header.className   = 'cal-header';
-  header.textContent = `${year}년 ${MONTH_KR[month - 1]}`;
-  container.appendChild(header);
-
-  // Weekdays row
-  const weekdaysRow = document.createElement('div');
-  weekdaysRow.className = 'cal-weekdays';
-  DAYS_KR.forEach((d) => {
-    const cell = document.createElement('div');
-    cell.className   = 'cal-weekday';
-    cell.textContent = d;
-    weekdaysRow.appendChild(cell);
-  });
-  container.appendChild(weekdaysRow);
-
-  // Grid
-  const grid = document.createElement('div');
-  grid.className = 'cal-grid';
-
-  // Empty cells before 1st
-  for (let i = 0; i < firstDay; i++) {
-    const empty = document.createElement('div');
-    empty.className = 'cal-day empty';
-    grid.appendChild(empty);
-  }
-
-  // Day cells
-  for (let d = 1; d <= lastDate; d++) {
-    const cell    = document.createElement('div');
-    const dayOfWk = (firstDay + d - 1) % 7;
-
-    const classes = ['cal-day'];
-    if (dayOfWk === 0) classes.push('sun');
-    if (dayOfWk === 6) classes.push('sat');
-    if (
-      d === today.getDate() &&
-      month - 1 === today.getMonth() &&
-      year === today.getFullYear()
-    ) classes.push('today');
-    if (d === weddingDay) classes.push('wedding-day');
-
-    cell.className   = classes.join(' ');
-    cell.textContent = d;
-    if (d === weddingDay) cell.setAttribute('aria-label', `${month}월 ${d}일 — 결혼식 날`);
-
-    grid.appendChild(cell);
-  }
-
-  container.appendChild(grid);
-})();
-
-/* ── GALLERY LIGHTBOX ────────────────────────────────────── */
+/* ── GALLERY MODAL ───────────────────────────────────────────*/
 (function initGallery() {
-  const items = $$('.gallery__item');
-  if (!items.length) return;
+  var items   = $$('.gallery__item');
+  var modal   = $('#gallery-modal');
+  var img     = $('#gallery-modal-img');
+  var counter = $('#gallery-modal-counter');
+  var btnPrev = $('.gallery-modal__prev', modal);
+  var btnNext = $('.gallery-modal__next', modal);
+  var btnClose= $('.gallery-modal__close', modal);
+  var backdrop= $('.gallery-modal__backdrop', modal);
+  if (!modal || !items.length) return;
 
-  function openLightbox(src) {
-    const lb = document.createElement('div');
-    lb.className = 'lightbox';
-    lb.setAttribute('role', 'dialog');
-    lb.setAttribute('aria-modal', 'true');
-    lb.innerHTML = `
-      <button class="lightbox__close" aria-label="닫기">×</button>
-      <img src="${src}" alt="갤러리 사진" />
-    `;
-    document.body.appendChild(lb);
+  /* Collect image sources from gallery items */
+  var srcs = items.map(function(item) {
+    var i = item.querySelector('img');
+    return i ? i.src : '';
+  });
+  var current = 0;
 
-    const close = () => lb.remove();
-    lb.querySelector('.lightbox__close').addEventListener('click', close);
-    lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
-    document.addEventListener('keydown', function handler(e) {
-      if (e.key === 'Escape') { close(); document.removeEventListener('keydown', handler); }
-    });
+  function show(idx) {
+    current = (idx + srcs.length) % srcs.length;
+    /* Re-trigger animation */
+    img.style.animation = 'none';
+    img.offsetHeight;                      /* reflow */
+    img.style.animation = '';
+    img.src = srcs[current];
+    img.alt = '사진 ' + (current + 1);
+    if (counter) counter.textContent = (current + 1) + ' / ' + srcs.length;
   }
 
-  items.forEach((item) => {
-    item.addEventListener('click', () => {
-      const imgEl = item.querySelector('img');
-      const src = item.dataset.src || (imgEl && imgEl.src);
-      if (src) openLightbox(src);
+  function open(idx) {
+    show(idx);
+    modal.removeAttribute('hidden');
+    document.body.style.overflow = 'hidden';
+    btnClose && btnClose.focus();
+  }
+
+  function close() {
+    modal.setAttribute('hidden', '');
+    document.body.style.overflow = '';
+    items[current] && items[current].focus();
+  }
+
+  /* Gallery item click */
+  items.forEach(function(item) {
+    item.addEventListener('click', function() {
+      open(parseInt(item.dataset.idx || '0', 10));
     });
-    item.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        item.click();
+    item.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); item.click(); }
+    });
+  });
+
+  if (btnPrev)  btnPrev.addEventListener('click',  function() { show(current - 1); });
+  if (btnNext)  btnNext.addEventListener('click',  function() { show(current + 1); });
+  if (btnClose) btnClose.addEventListener('click', close);
+  if (backdrop) backdrop.addEventListener('click', close);
+
+  /* Keyboard */
+  document.addEventListener('keydown', function(e) {
+    if (modal.hasAttribute('hidden')) return;
+    if (e.key === 'Escape')      close();
+    if (e.key === 'ArrowLeft')   show(current - 1);
+    if (e.key === 'ArrowRight')  show(current + 1);
+  });
+
+  /* Touch swipe */
+  var touchStartX = 0;
+  modal.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].clientX;
+  }, { passive: true });
+  modal.addEventListener('touchend', function(e) {
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 48) { dx < 0 ? show(current + 1) : show(current - 1); }
+  }, { passive: true });
+}());
+
+/* ── ACCORDION (max-height animation) ───────────────────────*/
+(function initAccordion() {
+  $$('.accordion__btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var isOpen = btn.getAttribute('aria-expanded') === 'true';
+      var bodyId = btn.getAttribute('aria-controls');
+      var body   = bodyId ? $('#' + bodyId) : btn.nextElementSibling;
+      if (!body) return;
+
+      btn.setAttribute('aria-expanded', String(!isOpen));
+      if (isOpen) {
+        body.classList.remove('open');
+      } else {
+        body.classList.add('open');
       }
     });
   });
-})();
+}());
 
-/* ── MAP BUTTONS ─────────────────────────────────────────── */
-(function initMapButtons() {
-  const kakao = $('a.btn--kakao');
-  const naver = $('a.btn--naver');
-  if (kakao) kakao.href = CONFIG.kakaoMapUrl;
-  if (naver) naver.href = CONFIG.naverMapUrl;
-})();
+/* ── COPY TO CLIPBOARD ───────────────────────────────────────*/
+(function initCopy() {
+  $$('.copy-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var text = btn.getAttribute('data-copy');
+      if (!text) return;
 
-/* ── GUESTBOOK ───────────────────────────────────────────── */
+      function onOk() {
+        btn.classList.add('copied');
+        var span = btn.querySelector('span');
+        var orig = span ? span.textContent : '';
+        if (span) span.textContent = '완료 ✓';
+        toast('계좌번호가 복사되었습니다.');
+        setTimeout(function() {
+          btn.classList.remove('copied');
+          if (span) span.textContent = orig;
+        }, 2200);
+      }
+
+      function fallback() {
+        var inp = document.createElement('input');
+        inp.value = text;
+        inp.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+        document.body.appendChild(inp);
+        inp.select();
+        inp.setSelectionRange(0, 9999);
+        try { document.execCommand('copy'); onOk(); }
+        catch(e) { toast('직접 길게 눌러 복사해주세요.'); }
+        document.body.removeChild(inp);
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(onOk, fallback);
+      } else {
+        fallback();
+      }
+    });
+  });
+}());
+
+/* ── GUESTBOOK ───────────────────────────────────────────────*/
 (function initGuestbook() {
-  const form    = $('#guestbook-form');
-  const list    = $('#guestbook-list');
-  const msgArea = $('#gb-message');
-  const counter = $('#gb-count');
+  var form    = $('#guestbook-form');
+  var list    = $('#guestbook-list');
+  var msgArea = $('#gb-message');
+  var cntEl   = $('#gb-count');
   if (!form || !list) return;
 
-  /* ---- Storage helpers ---- */
-  function loadEntries() {
-    try {
-      return JSON.parse(localStorage.getItem(CONFIG.guestbookStorageKey) || '[]');
-    } catch { return []; }
+  /* Storage */
+  function load() {
+    try { return JSON.parse(localStorage.getItem(CONFIG.guestbookKey) || '[]'); }
+    catch(e) { return []; }
+  }
+  function save(entries) {
+    localStorage.setItem(CONFIG.guestbookKey, JSON.stringify(entries));
   }
 
-  function saveEntries(entries) {
-    localStorage.setItem(CONFIG.guestbookStorageKey, JSON.stringify(entries));
+  /* Simple non-cryptographic hash (UI-only protection) */
+  function hash(str) {
+    var h = 5381;
+    for (var i = 0; i < str.length; i++) {
+      h = ((h << 5) + h) ^ str.charCodeAt(i);
+      h |= 0;
+    }
+    return h.toString(36);
   }
 
-  /* ---- Render ---- */
-  function renderEntries() {
-    const entries = loadEntries();
+  function formatDt(d) {
+    var dt = new Date(d);
+    return dt.getFullYear() + '.' +
+           pad(dt.getMonth() + 1) + '.' +
+           pad(dt.getDate()) + ' ' +
+           pad(dt.getHours()) + ':' +
+           pad(dt.getMinutes());
+  }
+
+  /* Render */
+  function render() {
+    var entries = load();
     list.innerHTML = '';
-
     if (!entries.length) {
-      const empty = document.createElement('p');
-      empty.className   = 'gb-empty';
-      empty.textContent = '아직 방명록이 없습니다. 첫 번째로 메시지를 남겨보세요 💌';
-      list.appendChild(empty);
+      list.innerHTML = '<p class="gb-empty">아직 방명록이 없습니다.<br>첫 번째로 메시지를 남겨보세요.</p>';
       return;
     }
-
-    // newest first
-    [...entries].reverse().forEach((entry) => {
-      list.appendChild(createEntryEl(entry));
+    entries.slice().reverse().forEach(function(e) {
+      var el = document.createElement('article');
+      el.className = 'gb-entry';
+      el.innerHTML =
+        '<div class="gb-entry__top">' +
+          '<span class="gb-entry__name">' + esc(e.name) + '</span>' +
+          '<span class="gb-entry__right">' +
+            '<span class="gb-entry__date">' + e.date + '</span>' +
+            '<button class="gb-entry__del" type="button" aria-label="삭제">삭제</button>' +
+          '</span>' +
+        '</div>' +
+        '<p class="gb-entry__msg">' + esc(e.msg).replace(/\n/g, '<br>') + '</p>';
+      el.querySelector('.gb-entry__del').addEventListener('click', function() {
+        openPwModal(e.id, e.ph);
+      });
+      list.appendChild(el);
     });
   }
 
-  function createEntryEl(entry) {
-    const el = document.createElement('article');
-    el.className      = 'gb-entry';
-    el.dataset.id     = entry.id;
-
-    // Safely escape text
-    const safe = (str) =>
-      str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-         .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-
-    el.innerHTML = `
-      <div class="gb-entry__header">
-        <span class="gb-entry__name">${safe(entry.name)}</span>
-        <div class="gb-entry__meta">
-          <span class="gb-entry__date">${entry.date}</span>
-          <button class="gb-entry__delete" type="button" aria-label="삭제">삭제</button>
-        </div>
-      </div>
-      <p class="gb-entry__message">${safe(entry.message).replace(/\n/g,'<br>')}</p>
-    `;
-
-    el.querySelector('.gb-entry__delete').addEventListener('click', () => {
-      openDeleteModal(entry.id, entry.passwordHash);
-    });
-
-    return el;
-  }
-
-  /* ---- Add entry ---- */
-  form.addEventListener('submit', (e) => {
+  /* Submit */
+  form.addEventListener('submit', function(e) {
     e.preventDefault();
-    const name     = $('#gb-name').value.trim();
-    const password = $('#gb-password').value.trim();
-    const message  = msgArea.value.trim();
+    var name = $('#gb-name').value.trim();
+    var pw   = $('#gb-password').value.trim();
+    var msg  = msgArea.value.trim();
+    if (!name || !pw || !msg) { toast('이름, 비밀번호, 메시지를 입력해주세요.'); return; }
+    if (msg.length > 200) { toast('메시지는 200자 이내로 입력해주세요.'); return; }
 
-    if (!name || !password || !message) {
-      showToast('이름, 비밀번호, 메시지를 모두 입력해주세요.');
-      return;
-    }
-    if (message.length > 200) {
-      showToast('메시지는 200자 이내로 입력해주세요.');
-      return;
-    }
-
-    const entry = {
-      id:           Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
-      name,
-      message,
-      passwordHash: simpleHash(password),
-      date:         formatDate(new Date()),
-    };
-
-    const entries = loadEntries();
-    entries.push(entry);
-    saveEntries(entries);
-
+    var entries = load();
+    entries.push({
+      id:   Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+      name: name,
+      msg:  msg,
+      ph:   hash(pw),
+      date: formatDt(Date.now()),
+    });
+    save(entries);
     form.reset();
-    if (counter) counter.textContent = '0 / 200';
-    renderEntries();
-    showToast('메시지가 등록되었습니다 💌');
+    if (cntEl) cntEl.textContent = '0 / 200';
+    render();
+    toast('메시지가 등록되었습니다.');
   });
 
-  /* ---- Character counter ---- */
-  if (msgArea && counter) {
-    msgArea.addEventListener('input', () => {
-      counter.textContent = `${msgArea.value.length} / 200`;
+  /* Char counter */
+  if (msgArea && cntEl) {
+    msgArea.addEventListener('input', function() {
+      cntEl.textContent = msgArea.value.length + ' / 200';
     });
   }
 
-  /* ---- Delete modal ---- */
-  function openDeleteModal(entryId, storedHash) {
-    // Remove existing modal if any
-    const existing = $('.modal-overlay');
-    if (existing) existing.remove();
+  /* Password modal */
+  var modal    = $('#pw-modal');
+  var pwInput  = $('#pw-modal-input');
+  var btnCancel= $('#pw-modal-cancel');
+  var btnConf  = $('#pw-modal-confirm');
+  var _pendingId = null;
+  var _pendingPh = null;
 
-    const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay';
-    overlay.innerHTML = `
-      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-        <h3 id="modal-title">비밀번호를 입력해주세요</h3>
-        <input type="password" id="modal-pw" placeholder="비밀번호" maxlength="10" style="width:100%;" autocomplete="off" />
-        <div class="modal-actions">
-          <button class="btn btn--ghost" id="modal-cancel">취소</button>
-          <button class="btn btn--danger" id="modal-confirm">삭제</button>
-        </div>
-      </div>
-    `;
-
-    document.body.appendChild(overlay);
-    const pwInput = $('#modal-pw', overlay);
-    pwInput.focus();
-
-    function closeModal() { overlay.remove(); }
-
-    overlay.addEventListener('click', (e) => {
-      if (e.target === overlay) closeModal();
-    });
-    $('#modal-cancel', overlay).addEventListener('click', closeModal);
-    $('#modal-confirm', overlay).addEventListener('click', () => {
-      const input = pwInput.value.trim();
-      if (simpleHash(input) === storedHash) {
-        const entries = loadEntries().filter((en) => en.id !== entryId);
-        saveEntries(entries);
-        renderEntries();
-        showToast('삭제되었습니다.');
-        closeModal();
-      } else {
-        pwInput.value = '';
-        pwInput.placeholder = '비밀번호가 틀렸습니다 ❌';
-        pwInput.classList.add('error-shake');
-        setTimeout(() => pwInput.classList.remove('error-shake'), 600);
-        showToast('비밀번호가 일치하지 않습니다.');
-      }
-    });
-
-    // Enter key on password field
-    pwInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') $('#modal-confirm', overlay).click();
-    });
+  function openPwModal(id, ph) {
+    _pendingId = id; _pendingPh = ph;
+    if (pwInput) { pwInput.value = ''; pwInput.placeholder = ' '; }
+    modal.removeAttribute('hidden');
+    setTimeout(function() { pwInput && pwInput.focus(); }, 50);
   }
-
-  /* ---- Simple hash (non-cryptographic, for UX only) ---- */
-  function simpleHash(str) {
-    let hash = 5381;
-    for (let i = 0; i < str.length; i++) {
-      hash = ((hash << 5) + hash) ^ str.charCodeAt(i);
-      hash |= 0; // 32-bit int
+  function closePwModal() {
+    modal.setAttribute('hidden', '');
+    _pendingId = null; _pendingPh = null;
+  }
+  function tryDelete() {
+    var val = pwInput ? pwInput.value.trim() : '';
+    if (hash(val) === _pendingPh) {
+      save(load().filter(function(e) { return e.id !== _pendingId; }));
+      render();
+      toast('삭제되었습니다.');
+      closePwModal();
+    } else {
+      pwInput.value = '';
+      pwInput.style.animation = 'none';
+      pwInput.offsetHeight;
+      pwInput.style.animation = 'shake .35s ease';
+      toast('비밀번호가 일치하지 않습니다.');
     }
-    return hash.toString(36);
   }
 
-  renderEntries();
-})();
+  if (btnCancel) btnCancel.addEventListener('click', closePwModal);
+  if (btnConf)   btnConf.addEventListener('click', tryDelete);
+  if (pwInput)   pwInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') tryDelete();
+  });
+  if (modal) modal.addEventListener('click', function(e) {
+    if (e.target === modal) closePwModal();
+  });
 
-/* ── RSVP FORM ───────────────────────────────────────────── */
+  /* Shake keyframe */
+  var s = document.createElement('style');
+  s.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}';
+  document.head.appendChild(s);
+
+  render();
+}());
+
+/* ── RSVP FORM ───────────────────────────────────────────────*/
 (function initRSVP() {
-  const form   = $('#rsvp-form');
-  const result = $('#rsvp-result');
-  const btn    = $('#rsvp-submit');
+  var form   = $('#rsvp-form');
+  var result = $('#rsvp-result');
+  var btn    = $('#rsvp-submit');
   if (!form) return;
 
-  form.addEventListener('submit', async (e) => {
+  form.addEventListener('submit', function(e) {
     e.preventDefault();
+    var name  = $('#rsvp-name').value.trim();
+    var phone = $('#rsvp-phone').value.trim();
+    var att   = $('input[name="attendance"]:checked');
+    if (!name)  { toast('이름을 입력해주세요.'); $('#rsvp-name').focus(); return; }
+    if (!phone) { toast('연락처를 입력해주세요.'); $('#rsvp-phone').focus(); return; }
+    if (!att)   { toast('참석 여부를 선택해주세요.'); return; }
 
-    // Basic validation
-    const name = $('#rsvp-name').value.trim();
-    const phone = $('#rsvp-phone').value.trim();
-    const attendanceEl = $('input[name="attendance"]:checked');
-
-    if (!name) { showToast('이름을 입력해주세요.'); $('#rsvp-name').focus(); return; }
-    if (!phone) { showToast('연락처를 입력해주세요.'); $('#rsvp-phone').focus(); return; }
-    if (!attendanceEl) { showToast('참석 여부를 선택해주세요.'); return; }
-
-    // Formspree check — warn if placeholder not replaced
+    /* Demo mode if Formspree ID not set */
     if (form.action.includes('YOUR_FORM_ID')) {
-      // Demo mode: show success without actually sending
-      handleSuccess('(데모 모드) 참석 의사가 전달되었습니다! 실제 운영 시 Formspree Form ID를 교체하세요.');
+      if (result) { result.textContent = '(데모) 전달 완료! Formspree ID를 교체해주세요.'; result.className = 'rsvp-form__result ok'; }
+      toast('✓ 전달 완료 (데모 모드)');
       return;
     }
 
-    btn.disabled    = true;
-    btn.textContent = '전송 중...';
+    btn.disabled = true;
+    btn.textContent = '전송 중…';
 
-    try {
-      const data = new FormData(form);
-      const res  = await fetch(form.action, {
-        method:  'POST',
-        body:    data,
-        headers: { Accept: 'application/json' },
-      });
-
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { Accept: 'application/json' },
+    }).then(function(res) {
       if (res.ok) {
-        handleSuccess('참석 의사가 전달되었습니다! 감사합니다 💍');
+        if (result) { result.textContent = '참석 의사가 전달되었습니다. 감사합니다.'; result.className = 'rsvp-form__result ok'; }
+        toast('✓ 전달 완료!');
         form.reset();
       } else {
-        const json = await res.json().catch(() => ({}));
-        throw new Error(json.error || '전송에 실패했습니다.');
+        throw new Error('서버 오류');
       }
-    } catch (err) {
-      if (result) {
-        result.textContent = `오류: ${err.message}`;
-        result.className   = 'rsvp__result error';
-      }
-      showToast('전송에 실패했습니다. 다시 시도해주세요.');
-    } finally {
-      btn.disabled    = false;
+    }).catch(function(err) {
+      if (result) { result.textContent = '전송에 실패했습니다. 다시 시도해주세요.'; result.className = 'rsvp-form__result err'; }
+      toast('전송 실패. 다시 시도해주세요.');
+    }).finally(function() {
+      btn.disabled = false;
       btn.textContent = '참석 의사 전달하기';
-    }
-  });
-
-  function handleSuccess(msg) {
-    if (result) {
-      result.textContent = msg;
-      result.className   = 'rsvp__result success';
-    }
-    showToast('✅ 전달 완료!');
-    btn.disabled    = false;
-    btn.textContent = '참석 의사 전달하기';
-  }
-})();
-
-/* ── ERROR SHAKE ANIMATION (CSS-in-JS fallback) ─────────── */
-(function addShakeStyle() {
-  const style = document.createElement('style');
-  style.textContent = `
-    @keyframes error-shake {
-      0%,100% { transform:translateX(0); }
-      20%      { transform:translateX(-6px); }
-      40%      { transform:translateX(6px); }
-      60%      { transform:translateX(-4px); }
-      80%      { transform:translateX(4px); }
-    }
-    .error-shake { animation: error-shake .4s ease; }
-  `;
-  document.head.appendChild(style);
-})();
-
-/* ── SMOOTH NAV ACTIVE ───────────────────────────────────── */
-(function initSmoothLinks() {
-  // Phone links — format nicely
-  $$('a[href^="tel:"]').forEach((a) => {
-    a.addEventListener('click', () => {
-      showToast('전화 앱이 열립니다 📞');
     });
   });
-})();
+}());
 
-/* ── PREVENT DOUBLE FORM SUBMIT ON MOBILE ────────────────── */
-document.addEventListener('touchstart', function(){}, {passive:true});
+/* ── INIT LUCIDE ICONS ───────────────────────────────────────*/
+/* Must run last so all data-lucide elements exist in DOM      */
+initIcons();

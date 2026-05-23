@@ -6,73 +6,96 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <meta name="theme-color" content="#F8F0E3" />
-    <meta property="og:title" content="우리 결혼합니다 💍" />
+    <meta name="theme-color" content="#FBFBFA" />
+    <meta property="og:title" content="김종학 ♥ 임소현" />
     <meta
       property="og:description"
-      content="김종학♥ 임소현의 결혼식에 초대합니다"
+      content="2026년 10월 4일, 저희 두 사람이 하나가 됩니다."
     />
-    <title>우리 결혼합니다 💍</title>
+    <title>김종학 ♥ 임소현</title>
+
+    <!-- Fonts: Playfair Display (serif) + Noto Sans KR (sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Noto+Sans+KR:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <!-- ② HERO -->
-    <section id="hero" class="section hero">
-      <div class="hero__petals" aria-hidden="true">
-        <span></span><span></span><span></span><span></span><span></span>
-        <span></span><span></span><span></span><span></span><span></span>
+    <!-- ════════════════════════════════════════════
+         ① HERO
+    ════════════════════════════════════════════ -->
+    <section id="hero" class="hero">
+      <!-- ── 메인 사진
+           실제 사진으로 교체 시 src 값만 변경하세요.
+           예) src="src/img/your-photo.jpg"
+      ── -->
+      <div class="hero__photo">
+        <img
+          src="this.src='src/img/PYD00030.jpg"
+          alt="커플 메인 사진"
+          onerror="this.src='src/img/PYD00062.jpg'"
+        />
       </div>
-      <div class="hero__content fade-in">
-        <p class="hero__label">We're Getting Married</p>
-        <div class="hero__photo-frame">
-          <img src="src/img/PYD00030.jpg" alt="커플 사진" />
-        </div>
+
+      <div class="hero__body reveal">
+        <p class="hero__tag">We're Getting Married</p>
+        <div class="hero__rule"></div>
         <h1 class="hero__names">
-          <span class="groom">김종학</span>
-          <span class="hero__heart">♥</span>
-          <span class="bride">임소현</span>
+          <span>김종학</span>
+          <em class="hero__amp">&amp;</em>
+          <span>임소현</span>
         </h1>
-        <p class="hero__date">2026년 10월 4일 일요일 오후 2시 30분</p>
+        <div class="hero__rule"></div>
+        <p class="hero__date">2026 · 10 · 04 &nbsp;<em>Sun.</em></p>
         <p class="hero__venue">더채플앳논현 6F 라포레홀</p>
+
+        <!-- D-Day 카운트다운 -->
         <div class="countdown" id="countdown" aria-live="polite">
-          <div class="countdown__item">
+          <div class="countdown__col">
             <span id="cnt-days">--</span><small>일</small>
           </div>
-          <div class="countdown__item">
+          <div class="countdown__sep" aria-hidden="true"></div>
+          <div class="countdown__col">
             <span id="cnt-hours">--</span><small>시간</small>
           </div>
-          <div class="countdown__item">
+          <div class="countdown__sep" aria-hidden="true"></div>
+          <div class="countdown__col">
             <span id="cnt-mins">--</span><small>분</small>
           </div>
-          <div class="countdown__item">
+          <div class="countdown__sep" aria-hidden="true"></div>
+          <div class="countdown__col">
             <span id="cnt-secs">--</span><small>초</small>
           </div>
         </div>
       </div>
-      <a href="#calendar" class="scroll-down" aria-label="아래로 스크롤">
-        <span></span>
+
+      <a href="#greeting" class="hero__scroll" aria-label="아래로 스크롤">
+        <i data-lucide="chevron-down"></i>
       </a>
     </section>
 
-    <!-- ① GREETING -->
-    <section id="greeting" class="section greeting">
-      <div class="container fade-in">
-        <div class="section-title">
-          <p class="section-label">Invitation</p>
+    <!-- ════════════════════════════════════════════
+         ② GREETING / 인사말
+    ════════════════════════════════════════════ -->
+    <section id="greeting" class="section section--white">
+      <div class="container reveal">
+        <header class="section-head">
+          <span class="section-tag">Invitation</span>
           <h2>인사말</h2>
-          <div class="divider"><span>✦</span></div>
-        </div>
-        <div class="greeting__text">
+        </header>
+
+        <div class="greeting__copy">
           <p>
+            따뜻한 날, 저희 두 사람이 하나가 됩니다.<br />
             서로가 마주보며 다져온 사랑을<br />
-            이제 함께 한 곳을 바라보며<br />
-            걸어가고자 합니다.
+            이제 함께 한 곳을 바라보며 걸어가고자 합니다.
           </p>
           <p>
             저희 두 사람이 사랑으로 만나<br />
@@ -83,350 +106,592 @@
             더없는 기쁨이겠습니다.
           </p>
         </div>
+
         <div class="greeting__family">
-          <div class="family-group">
-            <p class="family-title">신랑 측</p>
+          <div class="family-col">
+            <span class="family-label">신랑 측</span>
             <p>김 택명 · 곽 미희의 장남 <strong>종학</strong></p>
           </div>
-          <div class="family-divider">❧</div>
-          <div class="family-group">
-            <p class="family-title">신부 측</p>
+          <div class="family-divider"></div>
+          <div class="family-col">
+            <span class="family-label">신부 측</span>
             <p>임 성순 · 안 정숙의 장녀 <strong>소현</strong></p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- ③ GALLERY -->
-    <section id="gallery" class="section gallery-section">
-      <div class="container fade-in">
-        <div class="section-title">
-          <p class="section-label">Gallery</p>
+    <!-- ════════════════════════════════════════════
+         ③ GALLERY / 갤러리
+    ════════════════════════════════════════════ -->
+    <section id="gallery" class="section section--off">
+      <div class="container reveal">
+        <header class="section-head">
+          <span class="section-tag">Gallery</span>
           <h2>갤러리</h2>
-          <div class="divider"><span>✦</span></div>
-        </div>
+        </header>
+
+        <!-- ── 사진 교체 방법
+             각 <img> 의 src 값을 실제 사진 경로로 바꾸세요.
+             예) src="src/img/PYD00044.jpg"
+        ── -->
         <div class="gallery__grid">
-          <div
+          <button
             class="gallery__item"
-            tabindex="0"
-            role="button"
-            aria-label="사진 크게 보기 1"
-            data-src="src/img/PYD00030.jpg"
+            data-idx="0"
+            aria-label="사진 1 크게 보기"
           >
-            <img src="src/img/PYD00030.jpg" alt="커플 사진 1" loading="lazy" />
-          </div>
-          <div
+            <img
+              src="src/img/PYD00030.jpg"
+              alt="커플 사진 1"
+              loading="lazy"
+              onerror="this.src='src/img/PYD00030.jpg'"
+            />
+          </button>
+          <button
             class="gallery__item"
-            tabindex="0"
-            role="button"
-            aria-label="사진 크게 보기 2"
-            data-src="src/img/PYD00044.jpg"
+            data-idx="1"
+            aria-label="사진 2 크게 보기"
           >
-            <img src="src/img/PYD00044.jpg" alt="커플 사진 2" loading="lazy" />
-          </div>
-          <div
+            <img
+              src="src/img/PYD00044.jpg"
+              alt="커플 사진 2"
+              loading="lazy"
+              onerror="this.src='src/img/PYD00044.jpg'"
+            />
+          </button>
+          <button
             class="gallery__item"
-            tabindex="0"
-            role="button"
-            aria-label="사진 크게 보기 3"
-            data-src="src/img/PYD00062.jpg"
+            data-idx="2"
+            aria-label="사진 3 크게 보기"
           >
-            <img src="src/img/PYD00062.jpg" alt="커플 사진 3" loading="lazy" />
-          </div>
+            <img
+              src="src/img/PYD00062.jpg"
+              alt="커플 사진 3"
+              loading="lazy"
+              onerror="this.src='src/img/PYD00062.jpg'"
+            />
+          </button>
         </div>
       </div>
     </section>
 
-    <!-- ⑤ MAP / 오시는 길 -->
-    <section id="map" class="section map-section">
-      <div class="container fade-in">
-        <div class="section-title">
-          <p class="section-label">Location</p>
+    <!-- Gallery Modal (JS로 제어) -->
+    <div
+      class="gallery-modal"
+      id="gallery-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="갤러리 확대 보기"
+      hidden
+    >
+      <div class="gallery-modal__backdrop"></div>
+      <button class="gallery-modal__close" aria-label="닫기">
+        <i data-lucide="x"></i>
+      </button>
+      <button class="gallery-modal__prev" aria-label="이전">
+        <i data-lucide="chevron-left"></i>
+      </button>
+      <div class="gallery-modal__stage">
+        <img src="" alt="확대 사진" id="gallery-modal-img" />
+      </div>
+      <button class="gallery-modal__next" aria-label="다음">
+        <i data-lucide="chevron-right"></i>
+      </button>
+      <p class="gallery-modal__counter" id="gallery-modal-counter"></p>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         ④ LOCATION / 오시는 길
+    ════════════════════════════════════════════ -->
+    <section id="map" class="section section--white">
+      <div class="container reveal">
+        <header class="section-head">
+          <span class="section-tag">Location</span>
           <h2>오시는 길</h2>
-          <div class="divider"><span>✦</span></div>
-        </div>
-        <div class="map__venue-info">
-          <p class="map__name">더채플앳논현 6F 라포레홀</p>
-          <p class="map__address">
-            서울특별시 강남구 테헤란로 123<br />그랜드타워 B2F
+        </header>
+
+        <div class="venue-card">
+          <p class="venue-name">더채플앳논현 6F 라포레홀</p>
+          <p class="venue-addr">
+            서울특별시 강남구 논현로 842<br />더채플앳논현 6층
           </p>
         </div>
-        <!-- 지도 미리보기 (정적 이미지 또는 iframe으로 교체 가능) -->
-        <div class="map__preview" aria-label="웨딩홀 위치 지도">
-          <div class="map__placeholder">
-            <span>📍</span>
-            <p>그랜드 볼룸 웨딩홀</p>
-            <small>서울 강남구 테헤란로 123</small>
-          </div>
+
+        <!-- 지도 미리보기: iframe 또는 이미지로 교체 가능 -->
+        <div class="map-thumb" aria-label="지도 미리보기">
+          <i data-lucide="map-pin"></i>
+          <span>더채플앳논현</span>
+          <small>서울 강남구 논현로 842</small>
         </div>
-        <div class="map__buttons">
+
+        <div class="map-btns">
           <a
-            href="https://map.kakao.com/link/search/그랜드볼룸웨딩홀"
+            href="https://map.kakao.com/link/search/더채플앳논현"
             target="_blank"
             rel="noopener noreferrer"
             class="btn btn--kakao"
-            aria-label="카카오맵으로 길찾기"
           >
-            <img
-              src="https://t1.kakaocdn.net/kakaocorp/kakaocorp/admin/service/a85d0594017900001.png"
-              alt=""
-              width="20"
-              height="20"
-              onerror="this.style.display='none'"
-            />
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                d="M12 3C6.477 3 2 6.477 2 11c0 2.892 1.569 5.426 3.938 6.977L5 21l3.712-1.857A10.94 10.94 0 0 0 12 19c5.523 0 10-3.477 10-8s-4.477-8-10-8Z"
+                fill="#3A1D1D"
+              />
+            </svg>
             카카오맵
           </a>
           <a
-            href="https://map.naver.com/v5/search/그랜드볼룸웨딩홀"
+            href="https://map.naver.com/v5/search/더채플앳논현"
             target="_blank"
             rel="noopener noreferrer"
             class="btn btn--naver"
-            aria-label="네이버 지도로 길찾기"
           >
-            <span class="naver-icon" aria-hidden="true">N</span>
+            <span class="naver-n" aria-hidden="true">N</span>
             네이버 지도
           </a>
         </div>
-        <div class="transport-info">
-          <div class="transport-item">
-            <h4>🚇 지하철</h4>
-            <p>2호선 강남역 3번 출구 도보 5분</p>
-          </div>
-          <div class="transport-item">
-            <h4>🚌 버스</h4>
-            <p>강남역 정류장 하차<br />146, 341, 360번</p>
-          </div>
-          <div class="transport-item">
-            <h4>🚗 자가용</h4>
-            <p>웨딩홀 지하 주차장 이용<br />(3시간 무료 주차)</p>
-          </div>
-        </div>
+
+        <ul class="transport">
+          <li class="transport__row">
+            <span class="transport__label"
+              ><i data-lucide="train-front"></i>지하철</span
+            >
+            <span class="transport__info">7호선 학동역 1번 출구 도보 5분</span>
+          </li>
+          <li class="transport__row">
+            <span class="transport__label"><i data-lucide="bus"></i>버스</span>
+            <span class="transport__info"
+              >논현역 정류장 하차 — 143, 401, 3412번</span
+            >
+          </li>
+          <li class="transport__row">
+            <span class="transport__label"
+              ><i data-lucide="car"></i>자가용</span
+            >
+            <span class="transport__info"
+              >건물 내 주차장 이용 (2시간 무료)</span
+            >
+          </li>
+        </ul>
       </div>
     </section>
 
-    <!-- ⑥ BUS CHARTER / 버스 대절 안내 -->
-    <section id="bus" class="section bus-section">
-      <div class="container fade-in">
-        <div class="section-title">
-          <p class="section-label">Shuttle Bus</p>
+    <!-- ════════════════════════════════════════════
+         ⑤ SHUTTLE BUS / 버스 대절 안내
+    ════════════════════════════════════════════ -->
+    <section id="bus" class="section section--off">
+      <div class="container reveal">
+        <header class="section-head">
+          <span class="section-tag">Shuttle Bus</span>
           <h2>버스 대절 안내</h2>
-          <div class="divider"><span>✦</span></div>
-        </div>
-        <div class="bus__notice">
-          <p class="bus__notice-text">
-            멀리서 오시는 하객분들을 위해 전세버스를 운행합니다.<br />
-            편하게 이용해 주세요 🚌
-          </p>
-        </div>
-        <div class="bus__routes">
-          <div class="bus__route-card">
-            <div class="bus__route-header">
-              <span class="bus__route-badge">출발 B</span>
-              <h4>인천 출발</h4>
+        </header>
+
+        <p class="bus__intro">
+          멀리서 오시는 분들을 위해 전세버스를 운행합니다.
+        </p>
+
+        <div class="bus__cards">
+          <div class="bus__card">
+            <div class="bus__card-head">
+              <span class="bus__badge">출발 A</span>
+              <strong>인천 부평역 출발</strong>
             </div>
-            <ul class="bus__route-detail">
-              <li><span>📍 탑승 장소</span> 인천 부평역 3번 출구 앞</li>
-              <li><span>🕐 출발 시간</span> 오전 11시 00분</li>
-              <li><span>🕑 도착 예정</span> 오후 1시 (예정)</li>
+            <ul class="bus__list">
+              <li><span>탑승 장소</span>인천 부평역 3번 출구 앞</li>
+              <li><span>출발 시간</span>오전 11시 00분</li>
+              <li><span>도착 예정</span>오후 1시 00분</li>
             </ul>
-            <div class="bus__route-return">
-              <strong>귀가 버스</strong>
-              <p>식사 후 오후 4시 30분 출발 (부평역 도착 예정)</p>
+            <p class="bus__return">
+              <strong>귀가</strong> 식사 후 오후 4시 30분 출발
+            </p>
+          </div>
+        </div>
+
+        <ul class="bus__notes">
+          <li>좌석이 한정되어 있으니 RSVP 시 탑승 여부를 알려주세요.</li>
+          <li>교통 상황에 따라 시간이 달라질 수 있습니다.</li>
+          <li>문의 — 신랑 010-4230-8600 · 신부 010-2123-2354</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         ⑥ ACCOUNT / 마음 전하실 곳
+    ════════════════════════════════════════════ -->
+    <section id="account" class="section section--white">
+      <div class="container reveal">
+        <header class="section-head">
+          <span class="section-tag">Account</span>
+          <h2>마음 전하실 곳</h2>
+        </header>
+
+        <p class="account__intro">
+          축하의 마음을 전해주시려는 분들을 위해<br />계좌번호를 안내드립니다.
+        </p>
+
+        <!-- 신랑 측 아코디언 -->
+        <div class="accordion" id="acc-groom">
+          <button
+            class="accordion__btn"
+            type="button"
+            aria-expanded="false"
+            aria-controls="acc-groom-body"
+          >
+            <span>신랑 측</span>
+            <i data-lucide="plus" class="accordion__icon"></i>
+          </button>
+          <div class="accordion__body" id="acc-groom-body" role="region">
+            <div class="account__item">
+              <div class="account__meta">
+                <span class="account__rel">아버지</span>
+                <span class="account__name">김택명</span>
+                <span class="account__bank"
+                  >KB국민은행 &nbsp;·&nbsp; 000-00-000000</span
+                >
+              </div>
+              <button
+                class="copy-btn"
+                type="button"
+                data-copy="000-00-000000"
+                aria-label="계좌번호 복사"
+              >
+                <i data-lucide="copy"></i><span>복사</span>
+              </button>
+            </div>
+            <div class="account__item">
+              <div class="account__meta">
+                <span class="account__rel">어머니</span>
+                <span class="account__name">곽미희</span>
+                <span class="account__bank"
+                  >신한은행 &nbsp;·&nbsp; 000-000-000000</span
+                >
+              </div>
+              <button
+                class="copy-btn"
+                type="button"
+                data-copy="000-000-000000"
+                aria-label="계좌번호 복사"
+              >
+                <i data-lucide="copy"></i><span>복사</span>
+              </button>
+            </div>
+            <div class="account__item">
+              <div class="account__meta">
+                <span class="account__rel">신랑</span>
+                <span class="account__name">김종학</span>
+                <span class="account__bank"
+                  >카카오뱅크 &nbsp;·&nbsp; 3333-00-0000000</span
+                >
+              </div>
+              <button
+                class="copy-btn"
+                type="button"
+                data-copy="3333-00-0000000"
+                aria-label="계좌번호 복사"
+              >
+                <i data-lucide="copy"></i><span>복사</span>
+              </button>
             </div>
           </div>
         </div>
-        <div class="bus__notice bus__notice--small">
-          <p>
-            ※ 버스 좌석이 한정되어 있으니, 참석 의사 표시 시 탑승 여부를 꼭
-            알려주세요.
-          </p>
-          <p>※ 교통 상황에 따라 도착 시간이 달라질 수 있습니다.</p>
-          <p>※ 문의: 신랑 010-1234-5678 / 신부 010-8765-4321</p>
+
+        <!-- 신부 측 아코디언 -->
+        <div class="accordion" id="acc-bride">
+          <button
+            class="accordion__btn"
+            type="button"
+            aria-expanded="false"
+            aria-controls="acc-bride-body"
+          >
+            <span>신부 측</span>
+            <i data-lucide="plus" class="accordion__icon"></i>
+          </button>
+          <div class="accordion__body" id="acc-bride-body" role="region">
+            <div class="account__item">
+              <div class="account__meta">
+                <span class="account__rel">아버지</span>
+                <span class="account__name">임성순</span>
+                <span class="account__bank"
+                  >우리은행 &nbsp;·&nbsp; 000-000000-00-000</span
+                >
+              </div>
+              <button
+                class="copy-btn"
+                type="button"
+                data-copy="000-000000-00-000"
+                aria-label="계좌번호 복사"
+              >
+                <i data-lucide="copy"></i><span>복사</span>
+              </button>
+            </div>
+            <div class="account__item">
+              <div class="account__meta">
+                <span class="account__rel">어머니</span>
+                <span class="account__name">안정숙</span>
+                <span class="account__bank"
+                  >KB국민은행 &nbsp;·&nbsp; 000-00-000000</span
+                >
+              </div>
+              <button
+                class="copy-btn"
+                type="button"
+                data-copy="000-00-000000"
+                aria-label="계좌번호 복사"
+              >
+                <i data-lucide="copy"></i><span>복사</span>
+              </button>
+            </div>
+            <div class="account__item">
+              <div class="account__meta">
+                <span class="account__rel">신부</span>
+                <span class="account__name">임소현</span>
+                <span class="account__bank"
+                  >카카오뱅크 &nbsp;·&nbsp; 3333-00-0000000</span
+                >
+              </div>
+              <button
+                class="copy-btn"
+                type="button"
+                data-copy="3333-00-0000000"
+                aria-label="계좌번호 복사"
+              >
+                <i data-lucide="copy"></i><span>복사</span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ⑦ GUESTBOOK / 방명록 -->
-    <section id="guestbook" class="section guestbook-section">
-      <div class="container fade-in">
-        <div class="section-title">
-          <p class="section-label">Guestbook</p>
+    <!-- ════════════════════════════════════════════
+         ⑦ GUESTBOOK / 방명록
+    ════════════════════════════════════════════ -->
+    <section id="guestbook" class="section section--off">
+      <div class="container reveal">
+        <header class="section-head">
+          <span class="section-tag">Guestbook</span>
           <h2>방명록</h2>
-          <div class="divider"><span>✦</span></div>
-        </div>
-        <form id="guestbook-form" class="guestbook__form" novalidate>
-          <div class="form-row">
-            <input
-              type="text"
-              id="gb-name"
-              name="name"
-              placeholder="이름"
-              maxlength="20"
-              required
-              autocomplete="name"
-            />
-            <input
-              type="password"
-              id="gb-password"
-              name="password"
-              placeholder="비밀번호 (삭제용)"
-              maxlength="10"
-              required
-            />
+        </header>
+
+        <form id="guestbook-form" class="gb-form" novalidate>
+          <div class="gb-form__row">
+            <div class="field">
+              <input
+                type="text"
+                id="gb-name"
+                name="name"
+                placeholder=" "
+                maxlength="20"
+                required
+                autocomplete="name"
+              />
+              <label for="gb-name">이름</label>
+            </div>
+            <div class="field">
+              <input
+                type="password"
+                id="gb-password"
+                name="password"
+                placeholder=" "
+                maxlength="10"
+                required
+              />
+              <label for="gb-password">비밀번호 (삭제용)</label>
+            </div>
           </div>
-          <textarea
-            id="gb-message"
-            name="message"
-            placeholder="축하 메시지를 남겨주세요 💌"
-            maxlength="200"
-            rows="3"
-            required
-          ></textarea>
-          <div class="form-row form-row--right">
-            <span class="char-count" id="gb-count">0 / 200</span>
-            <button type="submit" class="btn btn--primary">남기기</button>
+          <div class="field">
+            <textarea
+              id="gb-message"
+              name="message"
+              placeholder=" "
+              maxlength="200"
+              rows="3"
+              required
+            ></textarea>
+            <label for="gb-message">축하 메시지</label>
+            <span class="field__count" id="gb-count">0 / 200</span>
+          </div>
+          <div class="gb-form__actions">
+            <button type="submit" class="btn btn--dark">남기기</button>
           </div>
         </form>
-        <div
-          class="guestbook__list"
-          id="guestbook-list"
-          aria-live="polite"
-        ></div>
+
+        <div class="gb-list" id="guestbook-list" aria-live="polite"></div>
       </div>
     </section>
 
-    <!-- ⑧ RSVP / 참석 의사 표시 -->
-    <section id="rsvp" class="section rsvp-section">
-      <div class="container fade-in">
-        <div class="section-title">
-          <p class="section-label">RSVP</p>
+    <!-- ════════════════════════════════════════════
+         ⑧ RSVP / 참석 의사 표시
+    ════════════════════════════════════════════ -->
+    <section id="rsvp" class="section section--white">
+      <div class="container reveal">
+        <header class="section-head">
+          <span class="section-tag">RSVP</span>
           <h2>참석 의사 표시</h2>
-          <div class="divider"><span>✦</span></div>
-        </div>
-        <p class="rsvp__desc">
-          원활한 행사 준비를 위해<br />
-          <strong>9월 20일까지</strong> 참석 여부를 알려주시면 감사하겠습니다.
+        </header>
+
+        <p class="rsvp__note">
+          원활한 준비를 위해 <strong>2026년 9월 20일까지</strong><br />
+          참석 여부를 알려주시면 감사하겠습니다.
         </p>
-        <!-- Formspree 사용: action의 YOUR_FORM_ID를 실제 ID로 교체하세요 -->
+
+        <!-- action의 YOUR_FORM_ID를 Formspree 실제 ID로 교체하세요 -->
         <form
           id="rsvp-form"
-          class="rsvp__form"
+          class="rsvp-form"
           action="https://formspree.io/f/YOUR_FORM_ID"
           method="POST"
           novalidate
         >
-          <div class="form-group">
-            <label for="rsvp-name">이름 <span class="required">*</span></label>
+          <div class="field">
             <input
               type="text"
               id="rsvp-name"
               name="name"
-              placeholder="홍길동"
+              placeholder=" "
               required
               autocomplete="name"
             />
+            <label for="rsvp-name">이름 <span class="req">*</span></label>
           </div>
-          <div class="form-group">
-            <label for="rsvp-phone"
-              >연락처 <span class="required">*</span></label
-            >
+          <div class="field">
             <input
               type="tel"
               id="rsvp-phone"
               name="phone"
-              placeholder="010-0000-0000"
+              placeholder=" "
               required
               autocomplete="tel"
               inputmode="tel"
             />
+            <label for="rsvp-phone">연락처 <span class="req">*</span></label>
           </div>
-          <div class="form-group">
-            <label>참석 여부 <span class="required">*</span></label>
-            <div class="radio-group">
-              <label class="radio-label">
-                <input type="radio" name="attendance" value="참석" required />
-                <span>✅ 참석</span>
-              </label>
-              <label class="radio-label">
-                <input type="radio" name="attendance" value="불참" />
-                <span>❌ 불참</span>
-              </label>
+
+          <fieldset class="fieldset">
+            <legend>참석 여부 <span class="req">*</span></legend>
+            <div class="chip-group">
+              <label class="chip"
+                ><input
+                  type="radio"
+                  name="attendance"
+                  value="참석"
+                  required
+                /><span>참석</span></label
+              >
+              <label class="chip"
+                ><input type="radio" name="attendance" value="불참" /><span
+                  >불참</span
+                ></label
+              >
             </div>
-          </div>
-          <div class="form-group" id="rsvp-meal-group">
-            <label>식사 여부</label>
-            <div class="radio-group">
-              <label class="radio-label">
-                <input type="radio" name="meal" value="할게요" />
-                <span>🍽️ 식사 할게요</span>
-              </label>
-              <label class="radio-label">
-                <input type="radio" name="meal" value="안 할게요" />
-                <span>🙏 괜찮아요</span>
-              </label>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend>식사 여부</legend>
+            <div class="chip-group">
+              <label class="chip"
+                ><input type="radio" name="meal" value="식사" /><span
+                  >식사 할게요</span
+                ></label
+              >
+              <label class="chip"
+                ><input type="radio" name="meal" value="패스" /><span
+                  >괜찮아요</span
+                ></label
+              >
             </div>
-          </div>
-          <div class="form-group" id="rsvp-bus-group">
-            <label>버스 탑승 여부</label>
-            <div class="radio-group">
-              <label class="radio-label">
-                <input type="radio" name="bus" value="없음" checked />
-                <span>🚗 직접 갈게요</span>
-              </label>
-              <label class="radio-label">
-                <input type="radio" name="bus" value="수원" />
-                <span>🚌 수원 버스</span>
-              </label>
-              <label class="radio-label">
-                <input type="radio" name="bus" value="인천" />
-                <span>🚌 인천 버스</span>
-              </label>
+          </fieldset>
+
+          <fieldset class="fieldset">
+            <legend>버스 탑승</legend>
+            <div class="chip-group">
+              <label class="chip"
+                ><input type="radio" name="bus" value="없음" checked /><span
+                  >직접 갈게요</span
+                ></label
+              >
+              <label class="chip"
+                ><input type="radio" name="bus" value="인천" /><span
+                  >인천 버스</span
+                ></label
+              >
             </div>
-          </div>
-          <div class="form-group">
-            <label for="rsvp-guests">동반 인원</label>
+          </fieldset>
+
+          <div class="field">
             <select id="rsvp-guests" name="guests">
-              <option value="0">본인만 (1명)</option>
-              <option value="1">+1명 (2명)</option>
-              <option value="2">+2명 (3명)</option>
-              <option value="3">+3명 이상</option>
+              <option value="1">본인만 (1명)</option>
+              <option value="2">+1명 (2명)</option>
+              <option value="3">+2명 (3명)</option>
+              <option value="4">+3명 이상</option>
             </select>
+            <label for="rsvp-guests">동반 인원</label>
           </div>
-          <div class="form-group">
-            <label for="rsvp-message">메시지 (선택)</label>
+
+          <div class="field">
             <textarea
-              id="rsvp-message"
+              id="rsvp-msg"
               name="message"
-              placeholder="전달 사항이 있으시면 남겨주세요."
+              placeholder=" "
               rows="3"
             ></textarea>
+            <label for="rsvp-msg">메시지 (선택)</label>
           </div>
+
           <button
             type="submit"
-            class="btn btn--primary btn--full"
+            class="btn btn--dark btn--full"
             id="rsvp-submit"
           >
             참석 의사 전달하기
           </button>
-          <div class="rsvp__result" id="rsvp-result" role="alert"></div>
+          <p class="rsvp-form__result" id="rsvp-result" role="alert"></p>
         </form>
       </div>
     </section>
 
-    <!-- FOOTER -->
+    <!-- ════════════════════════════════════════════
+         FOOTER
+    ════════════════════════════════════════════ -->
     <footer class="footer">
-      <div class="footer__flowers" aria-hidden="true">🌸 🌼 🌸</div>
-      <p>김종학 <span>♥</span> 임소현</p>
+      <p class="footer__couple">김종학 <em>&amp;</em> 임소현</p>
       <p class="footer__date">2026. 10. 04</p>
       <div class="footer__contact">
-        <a href="tel:01042308600">신랑에게 연락</a>
-        <span>·</span>
-        <a href="tel:01021232354">신부에게 연락</a>
+        <a href="tel:01042308600"><i data-lucide="phone"></i>신랑에게 연락</a>
+        <a href="tel:01021232354"><i data-lucide="phone"></i>신부에게 연락</a>
       </div>
     </footer>
 
-    <!-- TOAST -->
+    <!-- Toast 알림 -->
     <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <!-- 비밀번호 확인 모달 (방명록 삭제용) -->
+    <div
+      class="pw-modal"
+      id="pw-modal"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="pw-modal-title"
+    >
+      <div class="pw-modal__box">
+        <h3 id="pw-modal-title">비밀번호 확인</h3>
+        <div class="field">
+          <input
+            type="password"
+            id="pw-modal-input"
+            placeholder=" "
+            maxlength="10"
+            autocomplete="off"
+          />
+          <label for="pw-modal-input">비밀번호</label>
+        </div>
+        <div class="pw-modal__actions">
+          <button class="btn btn--ghost" id="pw-modal-cancel">취소</button>
+          <button class="btn btn--dark" id="pw-modal-confirm">삭제</button>
+        </div>
+      </div>
+    </div>
 
     <script src="script.js"></script>
   </body>
