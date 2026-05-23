@@ -1369,6 +1369,8 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
 .rsvp-modal .chip-group {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  border-bottom: none;
+  padding-bottom: 0;
 }
 .rsvp-modal .chip span {
   display: block;
