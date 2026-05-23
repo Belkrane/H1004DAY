@@ -10,8 +10,8 @@
 const CONFIG = {
   groomName:       '홍길동',
   brideName:       '김영희',
-  weddingDate:     new Date('2025-10-04T14:00:00'), // 결혼식 날짜/시간
-  calendarYear:    2025,
+  weddingDate:     new Date('2026-10-04T14:00:00'), // 결혼식 날짜/시간
+  calendarYear:    2026,
   calendarMonth:   10,   // 1~12
   weddingDay:      4,    // 달력에서 강조할 날
   venueName:       '그랜드 볼룸 웨딩홀',
@@ -62,11 +62,16 @@ function showToast(msg, duration = 2500) {
     const diff = CONFIG.weddingDate.getTime() - now;
 
     if (diff <= 0) {
-      // D-Day
-      days.textContent  = '0';
-      hours.textContent = '0';
-      mins.textContent  = '0';
-      secs.textContent  = '0';
+      // D-Day 당일
+      days.textContent  = '🎊';
+      hours.textContent = '🎊';
+      mins.textContent  = '🎊';
+      secs.textContent  = '🎊';
+      // 카운트다운 박스 전체에 D-Day 표시
+      var box = $('#countdown');
+      if (box) {
+        box.innerHTML = '<p style="font-size:1.1rem;color:#E8B4B8;font-weight:600;letter-spacing:.05em;">🎊 D - Day 🎊</p>';
+      }
       clearInterval(timer);
       return;
     }
@@ -89,7 +94,7 @@ function showToast(msg, duration = 2500) {
 
 /* ── CALENDAR ────────────────────────────────────────────── */
 (function initCalendar() {
-  const container = $('#calendar');
+  const container = $('#cal-render');
   if (!container) return;
 
   const { calendarYear: year, calendarMonth: month, weddingDay } = CONFIG;
@@ -156,24 +161,43 @@ function showToast(msg, duration = 2500) {
   container.appendChild(grid);
 })();
 
-/* ── SCROLL FADE-IN ──────────────────────────────────────── */
-(function initScrollFade() {
-  const targets = $$('.fade-in');
-  if (!targets.length) return;
+/* ── GALLERY LIGHTBOX ────────────────────────────────────── */
+(function initGallery() {
+  const items = $$('.gallery__item');
+  if (!items.length) return;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          e.target.classList.add('visible');
-          observer.unobserve(e.target);
-        }
-      });
-    },
-    { threshold: 0.12 }
-  );
+  function openLightbox(src) {
+    const lb = document.createElement('div');
+    lb.className = 'lightbox';
+    lb.setAttribute('role', 'dialog');
+    lb.setAttribute('aria-modal', 'true');
+    lb.innerHTML = `
+      <button class="lightbox__close" aria-label="닫기">×</button>
+      <img src="${src}" alt="갤러리 사진" />
+    `;
+    document.body.appendChild(lb);
 
-  targets.forEach((el) => observer.observe(el));
+    const close = () => lb.remove();
+    lb.querySelector('.lightbox__close').addEventListener('click', close);
+    lb.addEventListener('click', (e) => { if (e.target === lb) close(); });
+    document.addEventListener('keydown', function handler(e) {
+      if (e.key === 'Escape') { close(); document.removeEventListener('keydown', handler); }
+    });
+  }
+
+  items.forEach((item) => {
+    item.addEventListener('click', () => {
+      const imgEl = item.querySelector('img');
+      const src = item.dataset.src || (imgEl && imgEl.src);
+      if (src) openLightbox(src);
+    });
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        item.click();
+      }
+    });
+  });
 })();
 
 /* ── MAP BUTTONS ─────────────────────────────────────────── */
