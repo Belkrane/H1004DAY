@@ -106,6 +106,46 @@ function initIcons() {
   $$('.reveal').forEach(function(el) { observer.observe(el); });
 }());
 
+/* ── SCROLL IMAGE (parallax + reveal) ───────────────────────
+   ① IntersectionObserver → .is-visible → CSS fade+scale-in
+   ② scroll 이벤트 → translateY ±24 px 패럴랙스
+   ─────────────────────────────────────────────────────────── */
+(function initScrollImg() {
+  var section = document.getElementById('scroll_Img');
+  var photo   = document.getElementById('scroll-img-photo');
+  if (!section || !photo) return;
+
+  /* ① 뷰포트 진입 시 이미지 페이드+스케일 인 */
+  if ('IntersectionObserver' in window) {
+    var revealObs = new IntersectionObserver(function(entries) {
+      entries.forEach(function(e) {
+        if (e.isIntersecting) {
+          photo.classList.add('is-visible');
+          revealObs.unobserve(section);
+        }
+      });
+    }, { threshold: 0.06 });
+    revealObs.observe(section);
+  } else {
+    photo.classList.add('is-visible');
+  }
+
+  /* ② 스크롤 패럴랙스 */
+  function tick() {
+    var rect     = section.getBoundingClientRect();
+    var wh       = window.innerHeight;
+    if (rect.bottom < 0 || rect.top > wh) return;
+    var progress = (wh - rect.top) / (wh + rect.height); /* 0→1 */
+    var shift    = (progress - 0.5) * 48;                /* ±24 px */
+    /* .is-visible 이후에만 패럴랙스 transform 적용 (CSS 애니메이션과 충돌 방지) */
+    if (photo.classList.contains('is-visible')) {
+      photo.style.transform = 'translateY(' + shift.toFixed(1) + 'px) scale(1)';
+    }
+  }
+  window.addEventListener('scroll', tick, { passive: true });
+  tick();
+}());
+
 /* ── PETALS ──────────────────────────────────────────────────
    Creates N <div class="petal"> elements inside #petals-canvas.
    Size, position, duration, delay are randomised per petal.

@@ -23,18 +23,15 @@
          └──────────────────────────────────────────────┘
     ════════════════════════════════════════════════════ -->
     <!-- 기본 OG -->
-    <meta property="og:type"        content="website" />
-    <meta property="og:locale"      content="ko_KR" />
-    <meta property="og:site_name"   content="김종학 ♥ 임소현 청첩장" />
-    <meta property="og:title"       content="김종학 ♥ 임소현" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:site_name" content="김종학 ♥ 임소현 청첩장" />
+    <meta property="og:title" content="김종학 ♥ 임소현" />
     <meta
       property="og:description"
       content="2026년 10월 4일 일요일 오후 2시 30분 · 더채플앳논현 6F 라포레홀 — 두 사람의 결혼을 축하해주세요 🤍"
     />
-    <meta
-      property="og:url"
-      content="https://belkrane.github.io/H1004DAY/"
-    />
+    <meta property="og:url" content="https://belkrane.github.io/H1004DAY/" />
     <!-- 썸네일 이미지 (카카오톡 미리보기 핵심) -->
     <!-- ⚠ 이미지 파일이 실제 존재하는지 확인 후 사용 -->
     <meta
@@ -46,16 +43,20 @@
       사이즈를 명시하면 카카오톡이 레이아웃을 미리 잡아
       로딩이 빨라집니다. 1200×630 을 권장합니다.
     -->
-    <meta property="og:image:width"  content="1200" />
+    <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt"    content="김종학 & 임소현 결혼식 2026.10.04" />
+    <meta property="og:image:alt" content="김종학 & 임소현 결혼식 2026.10.04" />
     <title>김종학 ♥ 임소현</title>
 
-    <!-- Fonts: Playfair Display (serif) + Noto Sans KR (sans) -->
+    <!-- Fonts: White & Wood Theme -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!--
+      Noto Sans KR   — 한글 본문 산세리프 (가독성 우수)
+      Nanum Myeongjo — 한글 세리프 포인트체 (제목·날짜·장식)
+    -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Noto+Sans+KR:wght@300;400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
 
@@ -218,7 +219,8 @@
           <div class="family-col">
             <span class="family-label">신랑 측</span>
             <p>
-              김 택명 · 곽 미희의 장남<br />
+              김 택명 · 곽 미희의<br />
+              장남
               <strong>종학</strong>
             </p>
           </div>
@@ -226,7 +228,8 @@
           <div class="family-col">
             <span class="family-label">신부 측</span>
             <p>
-              임 성순 · 안 정숙의 장녀<br />
+              임 성순 · 안 정숙의<br />
+              장녀
               <strong>소현</strong>
             </p>
           </div>
@@ -235,9 +238,41 @@
     </section>
 
     <!-- ════════════════════════════════════════════
-         ③ GALLERY / 갤러리
+         ③ SCROLL IMAGE — 풀블리드 패럴랙스 사진
     ════════════════════════════════════════════ -->
-    <section id="gallery" class="section section--off">
+    <section id="scroll_Img" class="scroll-img-section">
+      <div class="scroll-img__wrap">
+        <img
+          src="src/img/PYD02712.jpg"
+          alt="웨딩 사진"
+          class="scroll-img__photo"
+          id="scroll-img-photo"
+          loading="lazy"
+        />
+      </div>
+      <!-- 상단/하단 vignette overlay -->
+      <div class="scroll-img__vignette" aria-hidden="true"></div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         ④ BIG DATE — 날짜 포인트
+    ════════════════════════════════════════════ -->
+    <section id="big_Date" class="section section--deep big-date-section">
+      <div class="container">
+        <div class="big-date reveal">
+          <span class="big-date__part">Oct. 4.</span>
+          <span class="big-date__part">2026</span>
+          <span class="big-date__sub"
+            >The Wedding Day &nbsp;·&nbsp; 더채플앳논현</span
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         ⑤ GALLERY / 갤러리
+    ════════════════════════════════════════════ -->
+    <section id="gallery" class="section section--warm">
       <div class="container reveal">
         <header class="section-head">
           <span class="section-tag">Gallery</span>
@@ -390,7 +425,7 @@
     <!-- ════════════════════════════════════════════
          ⑤ SHUTTLE BUS / 버스 대절 안내
     ════════════════════════════════════════════ -->
-    <section id="bus" class="section section--off">
+    <section id="bus" class="section section--stone">
       <div class="container reveal">
         <header class="section-head">
           <span class="section-tag">Shuttle Bus</span>
@@ -429,7 +464,7 @@
     <!-- ════════════════════════════════════════════
          ⑥ ACCOUNT / 마음 전하실 곳
     ════════════════════════════════════════════ -->
-    <section id="account" class="section section--white">
+    <section id="account" class="section section--blush">
       <div class="container reveal">
         <header class="section-head">
           <span class="section-tag">Account</span>
@@ -577,7 +612,7 @@
     <!-- ════════════════════════════════════════════
          ⑦ GUESTBOOK / 방명록
     ════════════════════════════════════════════ -->
-    <section id="guestbook" class="section section--off">
+    <section id="guestbook" class="section section--cool">
       <div class="container reveal">
         <header class="section-head">
           <span class="section-tag">Guestbook</span>
@@ -632,98 +667,6 @@
     </section>
 
     <!-- ════════════════════════════════════════════
-         ⑧ RSVP / 참석 의사 표시
-    ════════════════════════════════════════════ -->
-    <section id="rsvp" class="section section--white">
-      <div class="container reveal">
-        <header class="section-head">
-          <span class="section-tag">RSVP</span>
-          <h2>참석 의사 표시</h2>
-        </header>
-
-        <p class="rsvp__note">
-          원활한 준비를 위해 <strong>2026년 9월 20일까지</strong><br />
-          참석 여부를 알려주시면 감사하겠습니다.
-        </p>
-
-        <!-- action의 YOUR_FORM_ID를 Formspree 실제 ID로 교체하세요 -->
-        <form
-          id="rsvp-form"
-          class="rsvp-form"
-          action="https://formspree.io/f/YOUR_FORM_ID"
-          method="POST"
-          novalidate
-        >
-          <div class="field">
-            <input
-              type="text"
-              id="rsvp-name"
-              name="name"
-              placeholder=" "
-              required
-              autocomplete="name"
-            />
-            <label for="rsvp-name">이름 <span class="req">*</span></label>
-          </div>
-
-          <fieldset class="fieldset">
-            <legend>참석 여부 <span class="req">*</span></legend>
-            <div class="chip-group">
-              <label class="chip"
-                ><input
-                  type="radio"
-                  name="attendance"
-                  value="참석"
-                  required
-                /><span>참석</span></label
-              >
-              <label class="chip"
-                ><input type="radio" name="attendance" value="불참" /><span
-                  >불참</span
-                ></label
-              >
-            </div>
-          </fieldset>
-
-          <fieldset class="fieldset">
-            <legend>식사 여부</legend>
-            <div class="chip-group">
-              <label class="chip"
-                ><input type="radio" name="meal" value="식사" /><span
-                  >식사 할게요</span
-                ></label
-              >
-              <label class="chip"
-                ><input type="radio" name="meal" value="패스" /><span
-                  >괜찮아요</span
-                ></label
-              >
-            </div>
-          </fieldset>
-
-          <div class="field">
-            <select id="rsvp-guests" name="guests">
-              <option value="1">본인만 (1명)</option>
-              <option value="2">+1명 (2명)</option>
-              <option value="3">+2명 (3명)</option>
-              <option value="4">+3명 이상</option>
-            </select>
-            <label for="rsvp-guests">동반 인원</label>
-          </div>
-
-          <button
-            type="submit"
-            class="btn btn--dark btn--full"
-            id="rsvp-submit"
-          >
-            참석 의사 전달하기
-          </button>
-          <p class="rsvp-form__result" id="rsvp-result" role="alert"></p>
-        </form>
-      </div>
-    </section>
-
-    <!-- ════════════════════════════════════════════
          FOOTER
     ════════════════════════════════════════════ -->
     <footer class="footer">
@@ -760,9 +703,6 @@
         <div class="rsvp-modal__head">
           <span class="section-tag">RSVP</span>
           <h2 id="rsvp-modal-title">참석 의사 표시</h2>
-          <p class="rsvp__note">
-            원활한 준비를 위해 참석 여부를 알려주시면 감사하겠습니다.
-          </p>
         </div>
 
         <form

@@ -1,24 +1,42 @@
 /* ============================================================
-   style.css — Copenhagen-inspired Wedding Invitation
+   style.css — White & Wood Wedding Invitation
    Mobile-first · Vanilla CSS · No frameworks
    ============================================================ */
 
 /* ── 0. Design Tokens ─────────────────────────────────────── */
 :root {
-  --bg-off:    #FBFBFA;   /* off-white section background  */
-  --bg-white:  #FFFFFF;   /* pure white section background */
-  --text:      #222222;   /* primary text                  */
-  --text-2:    #555555;   /* secondary text                */
-  --muted:     #9A9A9A;   /* muted / placeholder           */
-  --line:      #E2E2E2;   /* divider lines                 */
-  --line-dk:   #C8C8C8;   /* slightly darker lines         */
+  /* ── 배경 팔레트 ─────────────────────────────────────── */
+  --bg-off:    #FAFAFA;   /* 클린 오프화이트 (Hero, 기본)   */
+  --bg-white:  #FFFFFF;   /* 순백 (인사말, 지도, RSVP)      */
+  --bg-warm:   #F7F2EB;   /* 따뜻한 크림 — 갤러리           */
+  --bg-stone:  #F0EBE3;   /* 웜 우드 스톤 — 버스             */
+  --bg-blush:  #F5EEE8;   /* 소프트 아이보리 — 마음 전하실 곳*/
+  --bg-cool:   #F2EDE9;   /* 웜 페이퍼 — 방명록              */
+  --bg-deep:   #2A2520;   /* 딥 웜 차콜 — 날짜 섹션          */
 
-  --serif:  'Playfair Display', Georgia, serif;
+  /* ── 우드 포인트 컬러 ────────────────────────────────── */
+  --wood:      #A67B5B;   /* 기본 우드톤 (버튼, 포인트)      */
+  --wood-dk:   #8B5A2B;   /* 진한 우드 (호버, 강조)          */
+  --wood-lt:   #C4A882;   /* 연한 우드 (룰, 서브 포인트)     */
+  --wood-pale: #EDE0D4;   /* 극연한 우드 (배경 강조)         */
+
+  /* ── 텍스트 ─────────────────────────────────────────── */
+  --text:      #2A2520;   /* 주 텍스트 — 웜 다크             */
+  --text-2:    #5C4F44;   /* 보조 텍스트                     */
+  --muted:     #9C8E83;   /* 뮤트 / 플레이스홀더             */
+  --line:      #E5D9CE;   /* 디바이더 — 우드 틴트            */
+  --line-dk:   #CDB9AC;   /* 진한 디바이더                   */
+
+  /* ── 폰트: White & Wood ─────────────────────────────
+     Nanum Myeongjo : 한글 세리프 포인트체 (이름·날짜·제목)
+     Noto Sans KR   : 한글 본문 산세리프 (가독성 우선)
+  ────────────────────────────────────────────────── */
+  --serif:  'Nanum Myeongjo', Georgia, serif;
   --sans:   'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
 
-  --px:  28px;       /* page horizontal padding    */
-  --max: 480px;      /* content max-width          */
-  --sec: 80px;       /* section vertical padding   */
+  --px:  28px;       /* 페이지 수평 패딩    */
+  --max: 480px;      /* 콘텐츠 최대 폭      */
+  --sec: 88px;       /* 섹션 수직 패딩 (여백 확대) */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
   --dur: 0.32s;
 }
@@ -28,10 +46,10 @@
 html { scroll-behavior: smooth; font-size: 16px; -webkit-text-size-adjust: 100%; }
 body {
   font-family: var(--sans);
-  font-weight: 300;
+  font-weight: 400;
   background: var(--bg-off);
   color: var(--text);
-  line-height: 1.85;
+  line-height: 1.9;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
@@ -39,15 +57,20 @@ img  { display: block; max-width: 100%; }
 a    { color: inherit; text-decoration: none; }
 ul   { list-style: none; }
 button, input, select, textarea { font-family: inherit; font-size: inherit; }
-strong { font-weight: 500; }
+strong { font-weight: 500; }   /* Noto Sans KR 500 = medium */
 fieldset { border: none; padding: 0; }
 legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: var(--muted); text-transform: uppercase; margin-bottom: 10px; float: left; width: 100%; }
 
 /* ── 2. Layout ────────────────────────────────────────────── */
-.section      { padding: var(--sec) var(--px); }
+.section        { padding: var(--sec) var(--px); }
 .section--white { background: var(--bg-white); }
 .section--off   { background: var(--bg-off);   }
-.container    { max-width: var(--max); margin: 0 auto; }
+.section--warm  { background: var(--bg-warm);  }
+.section--stone { background: var(--bg-stone); }
+.section--blush { background: var(--bg-blush); }
+.section--cool  { background: var(--bg-cool);  }
+.section--deep  { background: var(--bg-deep);  }
+.container      { max-width: var(--max); margin: 0 auto; }
 
 /* ── 3. Section Header ────────────────────────────────────── */
 .section-head {
@@ -108,26 +131,37 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   padding: 13px 28px;
   font-size: 0.8rem;
   font-weight: 400;
-  letter-spacing: 0.14em;
-  border: 1px solid var(--text);
+  letter-spacing: 0.12em;
+  border: 1px solid var(--wood);     /* 우드톤 테두리 */
   background: transparent;
-  color: var(--text);
+  color: var(--wood-dk);
   cursor: pointer;
-  border-radius: 0;
-  transition: background var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  border-radius: 10px;               /* 살짝 둥근 모서리 */
+  transition: background var(--dur) var(--ease), color var(--dur) var(--ease),
+              border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
   -webkit-tap-highlight-color: transparent;
 }
-.btn:active { opacity: .8; }
-.btn--dark {
-  background: var(--text);
-  color: #fff;
-  border-color: var(--text);
+.btn:hover {
+  background: var(--wood-pale);
+  box-shadow: 0 2px 10px rgba(139,90,43,0.15);
 }
-.btn--dark:hover { background: var(--text-2); border-color: var(--text-2); }
+.btn:active { opacity: .82; }
+.btn--dark {
+  background: var(--wood);           /* 우드톤 채움 버튼 */
+  color: #fff;
+  border-color: var(--wood);
+  box-shadow: 0 2px 12px rgba(139,90,43,0.25);
+}
+.btn--dark:hover {
+  background: var(--wood-dk);
+  border-color: var(--wood-dk);
+  box-shadow: 0 4px 16px rgba(139,90,43,0.30);
+}
 .btn--ghost {
   background: none;
   color: var(--muted);
   border-color: var(--line);
+  box-shadow: none;
 }
 .btn--full { width: 100%; padding: 16px; }
 
@@ -223,10 +257,10 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   margin-bottom: 16px;
 }
 .hero__rule {
-  width: 28px;
+  width: 32px;
   height: 1px;
-  background: var(--line-dk);
-  margin: 14px auto;
+  background: var(--wood-lt);    /* 우드톤 구분선 */
+  margin: 16px auto;
 }
 .hero__names {
   font-family: var(--serif);
@@ -283,8 +317,8 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
 .countdown__col span {
   font-family: var(--serif);
   font-size: 1.5rem;
-  font-weight: 400;
-  color: var(--text);
+  font-weight: 700;
+  color: var(--wood);            /* 우드톤 숫자 */
   line-height: 1;
   font-variant-numeric: tabular-nums;
   letter-spacing: 0.02em;
@@ -352,13 +386,14 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
-  height: 24px;
-  background: var(--text);
+  width: 26px;
+  height: 26px;
+  background: var(--wood);       /* 우드톤 원형 하이라이트 */
   color: #fff;
   border-radius: 50%;
   font-size: 0.78rem;
   line-height: 1;
+  box-shadow: 0 2px 8px rgba(139,90,43,0.30);
 }
 
 /* ── Floating Petals ──────────────────────────────────── */
@@ -405,6 +440,105 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   0%,100% { transform: translateX(-50%) translateY(0);  opacity: .5; }
   50%      { transform: translateX(-50%) translateY(5px); opacity: 1; }
 }
+
+/* ── 7-A. Scroll Image Section ───────────────────────────── */
+.scroll-img-section {
+  padding: 0;
+  position: relative;
+  overflow: hidden;
+  height: 72vw;
+  max-height: 66vh;
+  min-height: 260px;
+  background: var(--bg-deep);  /* fallback if image fails */
+}
+/* wrap 은 이미지보다 위아래로 약간 크게 — 패럴랙스 여분 공간 */
+.scroll-img__wrap {
+  position: absolute;
+  top: -12%;
+  bottom: -12%;
+  left: 0;
+  right: 0;
+  overflow: hidden;
+}
+.scroll-img__photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  display: block;
+  will-change: transform;
+  /* reveal: 섹션이 뷰포트에 진입할 때 페이드+스케일 */
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 1.1s ease, transform 1.1s ease;
+}
+.scroll-img__photo.is-visible {
+  opacity: 1;
+  transform: scale(1);
+}
+/* 상단·하단 페이드 vignette */
+.scroll-img__vignette {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(28,26,23,.40) 0%,
+    transparent 20%,
+    transparent 80%,
+    rgba(28,26,23,.40) 100%
+  );
+  pointer-events: none;
+}
+
+/* ── 7-B. Big Date Section ────────────────────────────────── */
+.big-date-section {
+  padding: 88px var(--px) 96px;
+}
+.big-date {
+  text-align: center;
+}
+.big-date__part {
+  display: block;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: clamp(4rem, 21vw, 8.5rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: #F0EDE8;
+}
+.big-date__sub {
+  display: block;
+  margin-top: 34px;
+  font-size: 0.62rem;
+  letter-spacing: 0.28em;
+  color: rgba(240,237,232,0.38);
+  text-transform: uppercase;
+}
+
+/* ── 스태거 reveal 애니메이션 (IntersectionObserver 활용) ──
+   부모(.big-date.reveal) 는 스스로 페이드하지 않고,
+   자식(.big-date__part / .big-date__sub) 만 순차 등장 */
+.io-ready .big-date.reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+.io-ready .big-date .big-date__part,
+.io-ready .big-date .big-date__sub {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.85s ease, transform 0.85s ease;
+}
+.io-ready .big-date.in-view .big-date__part,
+.io-ready .big-date.in-view .big-date__sub {
+  opacity: 1;
+  transform: translateY(0);
+}
+.io-ready .big-date.in-view .big-date__part:nth-child(1) { transition-delay: 0s;    }
+.io-ready .big-date.in-view .big-date__part:nth-child(2) { transition-delay: 0.25s; }
+.io-ready .big-date.in-view .big-date__part:nth-child(3) { transition-delay: 0.50s; }
+.io-ready .big-date.in-view .big-date__sub              { transition-delay: 0.75s; }
 
 /* ── 7. Greeting ──────────────────────────────────────────── */
 .greeting__copy {
@@ -639,14 +773,17 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
 .bus__cards {
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
+  gap: 12px;                     /* 카드 사이 간격 */
   margin-bottom: 24px;
 }
 .bus__card {
   background: var(--bg-white);
   padding: 22px;
+  border-radius: 12px;           /* 둥근 카드 */
+  border: 1px solid var(--wood-pale);
+  box-shadow:
+    0 2px 16px rgba(42,37,32,0.07),
+    0 1px 4px rgba(166,123,91,0.10);   /* 종이 질감 그림자 */
 }
 .bus__card-head {
   display: flex;
@@ -703,9 +840,11 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   font-size: 0.76rem;
   color: var(--muted);
   line-height: 1.85;
-  padding: 16px 18px;
-  border: 1px solid var(--line);
+  padding: 16px 20px;
+  border: 1px solid var(--wood-pale);
+  border-radius: 10px;
   background: var(--bg-white);
+  box-shadow: 0 1px 8px rgba(42,37,32,0.05);
 }
 .bus__notes li + li { margin-top: 3px; }
 .bus__notes li::before { content: '※ '; }
@@ -748,7 +887,7 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
 }
 .accordion__btn[aria-expanded="true"] .accordion__icon {
   transform: rotate(45deg);
-  stroke: var(--text);
+  stroke: var(--wood);           /* 열림 상태: 우드톤 아이콘 */
 }
 
 /* Max-height CSS animation for accordion body */
@@ -818,12 +957,12 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
 }
 .copy-btn svg { width: 12px; height: 12px; stroke-width: 2; flex-shrink: 0; }
 .copy-btn:hover {
-  border-color: var(--text);
-  color: var(--text);
+  border-color: var(--wood);
+  color: var(--wood);
 }
 .copy-btn.copied {
-  background: var(--text);
-  border-color: var(--text);
+  background: var(--wood);       /* 복사 완료: 우드톤 */
+  border-color: var(--wood);
   color: #fff;
 }
 .copy-btn.copied svg { stroke: #fff; }
@@ -854,7 +993,7 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
 .field input:focus,
 .field textarea:focus,
 .field select:focus {
-  border-color: var(--text);
+  border-color: var(--wood);     /* 포커스 라인: 우드톤 */
 }
 .field input::placeholder,
 .field textarea::placeholder { color: transparent; }
@@ -920,12 +1059,19 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
 }
 
 .gb-list {
-  border-top: 1px solid var(--line);
-  margin-top: 8px;
+  margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 .gb-entry {
-  padding: 18px 0;
-  border-bottom: 1px solid var(--line);
+  padding: 16px 18px;
+  background: var(--bg-white);
+  border: 1px solid var(--wood-pale);
+  border-radius: 12px;           /* 카드형 방명록 */
+  box-shadow:
+    0 2px 10px rgba(42,37,32,0.06),
+    0 1px 3px rgba(166,123,91,0.08);
   animation: slide-up .3s ease both;
 }
 @keyframes slide-up {
@@ -1014,9 +1160,9 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   transition: background var(--dur) ease, color var(--dur) ease, border-color var(--dur) ease;
 }
 .chip input:checked + span {
-  background: var(--text);
+  background: var(--wood);       /* 선택된 칩: 우드톤 */
   color: #fff;
-  border-color: var(--text);
+  border-color: var(--wood);
 }
 .req { color: var(--text); }
 .rsvp-form__result {
@@ -1026,7 +1172,7 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   min-height: 20px;
   color: var(--muted);
 }
-.rsvp-form__result.ok  { color: var(--text); }
+.rsvp-form__result.ok  { color: var(--wood); }  /* 전송 성공: 우드톤 */
 .rsvp-form__result.err { color: #999; }
 
 /* ── 15. Footer ───────────────────────────────────────────── */
@@ -1196,12 +1342,14 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   margin-bottom: 16px;
 }
 .rsvp-modal__head .rsvp__note { margin-bottom: 0; font-size: 0.83rem; }
+/* 모달 안 결과 메시지 영역 — 빈 상태일 때 최소 높이를 줄여 버튼 간격 축소 */
+.rsvp-modal__box .rsvp-form__result { min-height: 6px; }
 .rsvp-modal__skip {
   display: block;
   width: 100%;
   background: none;
   border: none;
-  margin-top: 14px;
+  margin-top: 2px;
   font-size: 0.74rem;
   letter-spacing: 0.1em;
   color: var(--muted);
