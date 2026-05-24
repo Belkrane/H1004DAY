@@ -7,8 +7,8 @@
 /* ── SCROLL TO TOP ON LOAD ────────────────────────────────────
    브라우저의 스크롤 위치 복원을 막고 항상 최상단에서 시작합니다.
    ─────────────────────────────────────────────────────────── */
-if ('scrollRestoration' in history) {
-  history.scrollRestoration = 'manual';
+if ("scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
 }
 window.scrollTo(0, 0);
 
@@ -50,7 +50,7 @@ var CONFIG = {
   /* ↓ Google Apps Script 웹앱 배포 후 URL을 아래에 붙여넣기        */
   /* 예) 'https://script.google.com/macros/s/AKfycb.../exec'        */
   sheetsUrl:
-    "https://script.google.com/macros/s/AKfycbx0pxeFiAZTVbocKOdJumgLBn5HOFjt7hsQ_Ccfuz_ZIkGledweLNnjJH66ahIFkd7n-g/exec",
+    "https://script.google.com/macros/s/AKfycbzUQiLYv859wzomiqphyyIIGWhkCFzhBzigNK1lihoMgVm-j7E2j53tr3FE73fxZ5Tubw/exec",
 };
 
 /* ── UTILS ───────────────────────────────────────────────────*/
@@ -161,7 +161,7 @@ function sheetsSubmit(payload, onOk, onErr) {
   }
   fetch(CONFIG.sheetsUrl, {
     method: "POST",
-    mode: "no-cors",   /* GAS 리다이렉트로 인한 CORS 차단 우회 */
+    mode: "no-cors" /* GAS 리다이렉트로 인한 CORS 차단 우회 */,
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body: new URLSearchParams(payload).toString(),
   })
@@ -490,6 +490,9 @@ function initIcons() {
   var cntEl = $("#gb-count");
   if (!form || !list) return;
 
+  /* Google Sheets 에서 가져온 방명록 캐시 (JSONP 응답) */
+  var _sheetsEntries = null;
+
   /* Storage */
   function load() {
     try {
@@ -527,44 +530,165 @@ function initIcons() {
     );
   }
 
-  /* Render */
+  /* Sheets 날짜 형식 변환: '2026-01-15 14:30:45' → '2026.01.15 14:30' */
+  function formatSheetsDate(str) {
+    var m = String(str).match(/(\d{4})-(\d{2})-(\d{2})[\sT](\d{2}):(\d{2})/);
+    if (m) return m[1] + "." + m[2] + "." + m[3] + " " + m[4] + ":" + m[5];
+    return str;
+  }
+
+  /* ── Google Sheets 방명록 JSONP 조회 ─────────────────────
+     GAS doGet?action=guestbook&callback=xxx 로 요청.
+     CORS 우회: <script> 태그 동적 삽입 (JSONP 패턴).
+     8초 타임아웃 후에도 로컬 항목만 표시하도록 fallback.
+     ─────────────────────────────────────────────────────── */
+  function fetchSheetsGuestbook() {
+    if (!CONFIG.sheetsUrl) return;
+    var cbName = "_gbSheet" + Date.now();
+    var script = document.createElement("script");
+    var done = false;
+
+    var tid = setTimeout(function () {
+      if (!done) {
+        done = true;
+        cleanup();
+        /* 타임아웃 — 로컬 항목만 표시 */
+        if (_sheetsEntries === null) {
+          _sheetsEntries = [];
+          render();
+        }
+      }
+    }, 8000);
+
+    function cleanup() {
+      clearTimeout(tid);
+      try {
+        delete window[cbName];
+      } catch (ex) {}
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+
+    window[cbName] = function (data) {
+      if (done) return;
+      done = true;
+      cleanup();
+      _sheetsEntries =
+        data && data.result === "success" ? data.entries || [] : [];
+      render();
+    };
+
+    script.onerror = function () {
+      if (!done) {
+        done = true;
+        cleanup();
+        if (_sheetsEntries === null) {
+          _sheetsEntries = [];
+          render();
+        }
+      }
+    };
+
+    script.src =
+      CONFIG.sheetsUrl +
+      "?action=guestbook&callback=" +
+      encodeURIComponent(cbName);
+    document.head.appendChild(script);
+  }
+
+  /* ── Render ───────────────────────────────────────────────
+     ① Sheets 항목을 기준으로 표시 (서버 타임스탬프 사용)
+     ② 로컬에 동일 항목이 있으면 id/ph(password hash)를 연결
+        → 삭제 버튼 활성화
+     ③ 아직 Sheets에 없는 로컬 전용 항목(방금 제출된 것 등)
+        도 함께 표시
+     ─────────────────────────────────────────────────────── */
   function render() {
-    var entries = load();
+    var localEntries = load();
+
+    /* 로컬 항목 → name+msg 키맵 (삭제 권한 연결용) */
+    var localMap = Object.create(null);
+    localEntries.forEach(function (le) {
+      localMap[le.name + "\x00" + le.msg] = le;
+    });
+
+    var combined = [];
+
+    /* Sheets 항목 추가 */
+    if (_sheetsEntries && _sheetsEntries.length) {
+      _sheetsEntries.forEach(function (se) {
+        var key = se.name + "\x00" + se.msg;
+        var loc = localMap[key];
+        combined.push({
+          name: se.name,
+          msg: se.msg,
+          date: formatSheetsDate(se.date),
+          id: loc ? loc.id : null,
+          ph: loc ? loc.ph : null,
+        });
+        if (loc) delete localMap[key]; /* 중복 제거 */
+      });
+    }
+
+    /* 아직 Sheets에 없는 로컬 전용 항목 추가 */
+    Object.keys(localMap).forEach(function (k) {
+      var le = localMap[k];
+      combined.push({
+        name: le.name,
+        msg: le.msg,
+        date: le.date,
+        id: le.id,
+        ph: le.ph,
+      });
+    });
+
+    /* 최신순 정렬 */
+    combined.sort(function (a, b) {
+      return a.date < b.date ? 1 : -1;
+    });
+
     list.innerHTML = "";
-    if (!entries.length) {
+
+    if (!combined.length) {
       list.innerHTML =
         '<p class="gb-empty">아직 방명록이 없습니다.<br>첫 번째로 메시지를 남겨보세요.</p>';
       return;
     }
-    entries
-      .slice()
-      .reverse()
-      .forEach(function (e) {
-        var el = document.createElement("article");
-        el.className = "gb-entry";
-        el.innerHTML =
-          '<div class="gb-entry__top">' +
-          '<span class="gb-entry__name">' +
-          esc(e.name) +
-          "</span>" +
-          '<span class="gb-entry__right">' +
-          '<span class="gb-entry__date">' +
-          e.date +
-          "</span>" +
-          '<button class="gb-entry__del" type="button" aria-label="삭제">삭제</button>' +
-          "</span>" +
-          "</div>" +
-          '<p class="gb-entry__msg">' +
-          esc(e.msg).replace(/\n/g, "<br>") +
-          "</p>";
-        el.querySelector(".gb-entry__del").addEventListener(
-          "click",
-          function () {
-            openPwModal(e.id, e.ph);
-          },
-        );
-        list.appendChild(el);
-      });
+
+    combined.forEach(function (e) {
+      var el = document.createElement("article");
+      el.className = "gb-entry";
+      /* 삭제 버튼: 이 기기에서 등록한 항목(id+ph 보유)만 표시 */
+      var delBtn =
+        e.id && e.ph
+          ? '<button class="gb-entry__del" type="button" aria-label="삭제">삭제</button>'
+          : "";
+      el.innerHTML =
+        '<div class="gb-entry__top">' +
+        '<span class="gb-entry__name">' +
+        esc(e.name) +
+        "</span>" +
+        '<span class="gb-entry__right">' +
+        '<span class="gb-entry__date">' +
+        e.date +
+        "</span>" +
+        delBtn +
+        "</span>" +
+        "</div>" +
+        '<p class="gb-entry__msg">' +
+        esc(e.msg).replace(/\n/g, "<br>") +
+        "</p>";
+      if (e.id && e.ph) {
+        (function (id, ph) {
+          el.querySelector(".gb-entry__del").addEventListener(
+            "click",
+            function () {
+              openPwModal(id, ph);
+            },
+          );
+        })(e.id, e.ph);
+      }
+      list.appendChild(el);
+    });
   }
 
   /* 폼 첫 상호작용 시 스팸 타이머 시작 */
@@ -703,7 +827,9 @@ function initIcons() {
     "@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}";
   document.head.appendChild(s);
 
+  /* 초기 렌더: 로컬 항목 즉시 표시 후 Sheets 조회 시작 */
   render();
+  fetchSheetsGuestbook();
 })();
 
 /* ── RSVP FORM ───────────────────────────────────────────────*/

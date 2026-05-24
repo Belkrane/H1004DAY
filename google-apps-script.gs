@@ -134,8 +134,61 @@ function doPost(e) {
   }
 }
 
-/* ── GET 핸들러 (배포 후 URL 확인용) ───────────────────────── */
+/* ── GET 핸들러 ─────────────────────────────────────────────
+   ?action=guestbook&callback=fnName  → 방명록 목록 JSONP 반환
+   (인수 없음)                        → 서버 상태 확인용 텍스트
+   ─────────────────────────────────────────────────────────── */
 function doGet(e) {
+  var p = e.parameter || {};
+
+  /* ── 방명록 목록 조회 ────────────────────────────────────── */
+  if (p.action === 'guestbook') {
+    var cb = (p.callback && /^[a-zA-Z_$][a-zA-Z0-9_$]*$/.test(p.callback))
+             ? p.callback : null;
+    try {
+      var ss = SPREADSHEET_ID
+        ? SpreadsheetApp.openById(SPREADSHEET_ID)
+        : SpreadsheetApp.getActiveSpreadsheet();
+
+      var sheet  = ss.getSheetByName('방명록');
+      var entries = [];
+
+      if (sheet && sheet.getLastRow() > 1) {
+        var data = sheet.getRange(2, 1, sheet.getLastRow() - 1, 3).getValues();
+        for (var i = 0; i < data.length; i++) {
+          var row = data[i];
+          var rowName = String(row[1] || '').trim();
+          var rowMsg  = String(row[2] || '').trim();
+          if (rowName && rowMsg) {
+            entries.push({
+              date: String(row[0]),   // 'yyyy-MM-dd HH:mm:ss'
+              name: rowName,
+              msg:  rowMsg
+            });
+          }
+        }
+      }
+
+      var res = JSON.stringify({ result: 'success', entries: entries });
+      if (cb) {
+        return ContentService
+          .createTextOutput(cb + '(' + res + ')')
+          .setMimeType(ContentService.MimeType.JAVASCRIPT);
+      }
+      return ContentService.createTextOutput(res).setMimeType(ContentService.MimeType.JSON);
+
+    } catch (err) {
+      var errJson = JSON.stringify({ result: 'error', message: err.message });
+      if (cb) {
+        return ContentService
+          .createTextOutput(cb + '(' + errJson + ')')
+          .setMimeType(ContentService.MimeType.JAVASCRIPT);
+      }
+      return ContentService.createTextOutput(errJson).setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  /* ── 기본 응답 (배포 확인용) ────────────────────────────── */
   return ContentService
     .createTextOutput('✓ Wedding Form Server is running.')
     .setMimeType(ContentService.MimeType.TEXT);
