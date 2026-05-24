@@ -81,10 +81,7 @@
 
       <!-- ── Zone ② : Photo — Tag 이후 등장 ── -->
       <div class="hero__photo">
-        <img
-          src="src/img/header.PNG"
-          alt="커플 메인 사진"
-        />
+        <img src="src/img/header.PNG" alt="커플 메인 사진" />
       </div>
 
       <!-- ── Zone ③ : Names + Date/Venue — 마지막 등장 ── -->
@@ -160,37 +157,45 @@
           <h2>갤러리</h2>
         </header>
 
+        <!--
+          갤러리 레이아웃 — 3열 그리드, 5개마다 와이드(2열) 피처드 사진
+          패턴: [W(2)][1] / [1][1][1] / [1][W(2)] / [1][1][1] / …  (2행 × 5사진)
+        -->
         <div class="gallery__grid">
-          <button class="gallery__item" data-idx="0"  aria-label="사진 1 크게 보기"><img src="src/gallery/PYD00041.jpg"  alt="커플 사진 1"  loading="lazy" /></button>
-          <button class="gallery__item" data-idx="1"  aria-label="사진 2 크게 보기"><img src="src/gallery/PYD00195.jpg"  alt="커플 사진 2"  loading="lazy" /></button>
-          <button class="gallery__item" data-idx="2"  aria-label="사진 3 크게 보기"><img src="src/gallery/PYD00282.jpg"  alt="커플 사진 3"  loading="lazy" /></button>
-          <button class="gallery__item" data-idx="3"  aria-label="사진 4 크게 보기"><img src="src/gallery/PYD00658.jpg"  alt="커플 사진 4"  loading="lazy" /></button>
-          <button class="gallery__item" data-idx="4"  aria-label="사진 5 크게 보기"><img src="src/gallery/PYD00702.jpg"  alt="커플 사진 5"  loading="lazy" /></button>
-          <button class="gallery__item" data-idx="5"  aria-label="사진 6 크게 보기"><img src="src/gallery/PYD00983.jpg"  alt="커플 사진 6"  loading="lazy" /></button>
-          <button class="gallery__item" data-idx="6"  aria-label="사진 7 크게 보기"><img src="src/gallery/PYD01227.jpg"  alt="커플 사진 7"  loading="lazy" /></button>
-          <button class="gallery__item" data-idx="7"  aria-label="사진 8 크게 보기"><img src="src/gallery/PYD01689.jpg"  alt="커플 사진 8"  loading="lazy" /></button>
-          <button class="gallery__item" data-idx="8"  aria-label="사진 9 크게 보기"><img src="src/gallery/PYD01769.jpg"  alt="커플 사진 9"  loading="lazy" /></button>
-          <button class="gallery__item" data-idx="9"  aria-label="사진 10 크게 보기"><img src="src/gallery/PYD01804.jpg" alt="커플 사진 10" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="10" aria-label="사진 11 크게 보기"><img src="src/gallery/PYD01849.jpg" alt="커플 사진 11" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="11" aria-label="사진 12 크게 보기"><img src="src/gallery/PYD01929.jpg" alt="커플 사진 12" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="12" aria-label="사진 13 크게 보기"><img src="src/gallery/PYD02032.jpg" alt="커플 사진 13" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="13" aria-label="사진 14 크게 보기"><img src="src/gallery/PYD02157.jpg" alt="커플 사진 14" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="14" aria-label="사진 15 크게 보기"><img src="src/gallery/PYD02244.jpg" alt="커플 사진 15" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="15" aria-label="사진 16 크게 보기"><img src="src/gallery/PYD02300.jpg" alt="커플 사진 16" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="16" aria-label="사진 17 크게 보기"><img src="src/gallery/PYD02496.jpg" alt="커플 사진 17" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="17" aria-label="사진 18 크게 보기"><img src="src/gallery/PYD02550.jpg" alt="커플 사진 18" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="18" aria-label="사진 19 크게 보기"><img src="src/gallery/PYD02841.jpg" alt="커플 사진 19" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="19" aria-label="사진 20 크게 보기"><img src="src/gallery/PYD03060.jpg" alt="커플 사진 20" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="20" aria-label="사진 21 크게 보기"><img src="src/gallery/PYD03100.jpg" alt="커플 사진 21" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="21" aria-label="사진 22 크게 보기"><img src="src/gallery/PYD03263.jpg" alt="커플 사진 22" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="22" aria-label="사진 23 크게 보기"><img src="src/gallery/PYD03463.jpg" alt="커플 사진 23" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="23" aria-label="사진 24 크게 보기"><img src="src/gallery/PYD03493.jpg" alt="커플 사진 24" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="24" aria-label="사진 25 크게 보기"><img src="src/gallery/PYD03661.jpg" alt="커플 사진 25" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="25" aria-label="사진 26 크게 보기"><img src="src/gallery/PYD03681.jpg" alt="커플 사진 26" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="26" aria-label="사진 27 크게 보기"><img src="src/gallery/PYD03694.jpg" alt="커플 사진 27" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="27" aria-label="사진 28 크게 보기"><img src="src/gallery/IMG_8467.JPG" alt="커플 사진 28" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="28" aria-label="사진 29 크게 보기"><img src="src/gallery/IMG_8471.jpg" alt="커플 사진 29" loading="lazy" /></button>
-          <button class="gallery__item" data-idx="29" aria-label="사진 30 크게 보기"><img src="src/gallery/IMG_8474.jpg" alt="커플 사진 30" loading="lazy" /></button>
+          <!-- 01~05 -->
+          <button
+            class="gallery__item"
+            data-idx="0"
+            aria-label="사진 1 크게 보기"
+          >
+            <img
+              src="src/gallery/IMG_8467.JPG"
+              alt="커플 사진 1"
+              loading="lazy"
+            />
+          </button>
+          <button
+            class="gallery__item"
+            data-idx="1"
+            aria-label="사진 2 크게 보기"
+          >
+            <img
+              src="src/gallery/IMG_8471.jpg"
+              alt="커플 사진 2"
+              loading="lazy"
+            />
+          </button>
+          <button
+            class="gallery__item"
+            data-idx="2"
+            aria-label="사진 30 크게 보기"
+          >
+            <img
+              src="src/gallery/IMG_8474.jpg"
+              alt="커플 사진 3"
+              loading="lazy"
+            />
+          </button>
         </div>
       </div>
     </section>
@@ -346,19 +351,28 @@
 
         <div class="venue-card">
           <p class="venue-name">더채플앳논현 6F 라포레홀</p>
-          <p class="venue-addr">서울특별시 강남구 논현로 842</p>
+          <p class="venue-addr">서울특별시 강남구 논현로 549</p>
         </div>
 
-        <!-- 지도 미리보기: iframe 또는 이미지로 교체 가능 -->
-        <div class="map-thumb" aria-label="지도 미리보기">
-          <i data-lucide="map-pin"></i>
-          <span>더채플앳논현</span>
-          <small>서울 강남구 논현로 842</small>
+        <!-- 카카오 지도 미리보기 (반응형) -->
+        <div class="kakao-map-wrap">
+          <a
+            href="https://kko.to/ddpaWjQcjI"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="카카오맵에서 더채플앳논현 보기"
+          >
+            <img
+              class="kakao-map__img"
+              src="https://t1.daumcdn.net/roughmap/imgmap/f2021a6e66e2ee3028b75bbf4020fc6535fdee67e7ce5f59ea9b1294f2d9be01"
+              alt="더채플앳논현 지도"
+            />
+          </a>
         </div>
 
         <div class="map-btns">
           <a
-            href="https://map.kakao.com/link/search/더채플앳논현"
+            href="https://kko.to/ddpaWjQcjI"
             target="_blank"
             rel="noopener noreferrer"
             class="btn btn--kakao"
@@ -372,7 +386,7 @@
             카카오맵
           </a>
           <a
-            href="https://map.naver.com/v5/search/더채플앳논현"
+            href="https://naver.me/xtgpXRJ4"
             target="_blank"
             rel="noopener noreferrer"
             class="btn btn--naver"
@@ -387,12 +401,22 @@
             <span class="transport__label"
               ><i data-lucide="train-front"></i>지하철</span
             >
-            <span class="transport__info">7호선 학동역 1번 출구 도보 5분</span>
+            <div class="transport__lines">
+              <span class="transport__info">
+                <span class="subway-9">언주역(9호선)</span> 7번 출구 → 정면 150m
+                도보 후 우측 건물
+              </span>
+              <span class="transport__info">
+                <span class="subway-2">역삼역(2호선)</span> 6번 출구 → 좌측 450m
+                도보 후 좌측 건물
+              </span>
+            </div>
           </li>
           <li class="transport__row">
             <span class="transport__label"><i data-lucide="bus"></i>버스</span>
             <span class="transport__info"
-              >논현역 정류장 하차 — 143, 401, 3412번</span
+              >간선 147·464 / 지선 4211 / 광역 3600·9600 — 차병원(역삼방면) 하차
+              후 역삼역 방면 50m 우측</span
             >
           </li>
           <li class="transport__row">
@@ -400,7 +424,8 @@
               ><i data-lucide="car"></i>자가용</span
             >
             <span class="transport__info"
-              >건물 내 주차장 이용 (2시간 무료)</span
+              >동호대교 남단 → 압구정역 → 학동역 → 차병원 사거리 → 역삼역 방면
+              200m 직진 후 우측 건물</span
             >
           </li>
         </ul>
@@ -436,22 +461,22 @@
             <li class="bus__stop">
               <div class="bus__stop-marker">01</div>
               <div class="bus__stop-body">
-                <strong>탑승 장소 ①</strong>
-                <span>오전 00시 00분 출발</span>
+                <strong>한화오션플라자 야외 주차장</strong>
+                <span>오전 08시 30분 출발</span>
               </div>
             </li>
             <li class="bus__stop">
               <div class="bus__stop-marker">02</div>
               <div class="bus__stop-body">
-                <strong>탑승 장소 ②</strong>
-                <span>오전 00시 00분 출발</span>
+                <strong>옥포 소방서</strong>
+                <span>오전 08시 40분 출발</span>
               </div>
             </li>
             <li class="bus__stop">
               <div class="bus__stop-marker">03</div>
               <div class="bus__stop-body">
-                <strong>탑승 장소 ③</strong>
-                <span>오전 00시 00분 출발</span>
+                <strong>고현 육교 버스 정류장</strong>
+                <span>오전 08시 50분 출발</span>
               </div>
             </li>
           </ul>
@@ -460,12 +485,6 @@
             <strong>귀가</strong> 식사 후 오후 4시 30분 출발
           </p>
         </div>
-
-        <ul class="bus__notes">
-          <li>좌석이 한정되어 있으니 RSVP 시 탑승 여부를 알려주세요.</li>
-          <li>교통 상황에 따라 시간이 달라질 수 있습니다.</li>
-          <li>문의 — 신랑 010-4230-8600 · 신부 010-2123-2354</li>
-        </ul>
       </div>
     </section>
     <!-- ════════════════════════════════════════════
