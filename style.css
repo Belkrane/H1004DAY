@@ -33,6 +33,7 @@
   ────────────────────────────────────────────────── */
   --serif:  'Nanum Myeongjo', Georgia, serif;
   --sans:   'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  --script: 'Great Vibes', cursive;   /* 웨딩 캘리그래피 필기체 */
 
   --px:  28px;       /* 페이지 수평 패딩    */
   --max: 480px;      /* 콘텐츠 최대 폭      */
@@ -209,11 +210,103 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   padding-bottom: 56px;
 }
 
-/* Full-bleed photo with CSS mask fade */
+/* ══════════════════════════════════════════════════════════
+   Hero: 3-Zone Sequential Entrance
+   ① Tag zone   → 0 s      fade in
+   ② Photo zone → 0.65 s   slide up + fade in
+   ③ Names zone → 1.1 s    fade in
+   ══════════════════════════════════════════════════════════ */
+
+/* ── Zone ①: Tag ───────────────────────────────────────────
+   흰 배경 독립 영역 — 하단 그라데이션으로 photo 와 자연스럽게 연결 */
+.hero__tag-zone {
+  width: 100%;
+  background: var(--bg-white);
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 44px var(--px) 40px;
+  position: relative;                     /* ::after 그라데이션 기준점    */
+  z-index: 2;                             /* photo 위에 그라데이션 노출   */
+  /* Zone 자체는 즉시 나타남 */
+  animation: heroTagZoneIn 0.7s ease both;
+}
+
+/* 하단 그라데이션 브릿지: 흰 zone → photo 자연스럽게 페이드 */
+.hero__tag-zone::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -68px;                          /* photo 위에 68px 만큼 겹침   */
+  height: 68px;
+  background: linear-gradient(
+    to bottom,
+    var(--bg-white) 0%,
+    transparent    100%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 텍스트: 스프링 등장 + hover 인터렉션 */
+.hero__tag {
+  font-family: var(--script);
+  font-style: normal;
+  font-size: clamp(2.6rem, 9vw, 4rem);
+  letter-spacing: 0.04em;
+  color: var(--wood-dk);                  /* 흰 배경 위 우드 컬러        */
+  text-transform: none;
+  text-align: center;
+  line-height: 1.3;
+  display: inline-block;                  /* ::after 장식선을 위해       */
+  position: relative;
+  cursor: default;
+  /* 입장: 아래서 float up + spring */
+  animation: heroTagTextIn 1.0s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+  /* hover 전환 */
+  transition:
+    transform     0.55s cubic-bezier(0.34, 1.56, 0.64, 1),
+    letter-spacing 0.45s ease,
+    color          0.3s  ease;
+}
+
+/* hover: 텍스트 살짝 커지고 자간 벌어짐 */
+.hero__tag-zone:hover .hero__tag {
+  transform: scale(1.05);
+  letter-spacing: 0.08em;
+  color: var(--wood);                     /* 약간 밝아지는 느낌          */
+}
+
+/* 장식 underline — 텍스트 뒤에 선이 그려짐 */
+.hero__tag::after {
+  content: '';
+  display: block;
+  width: 52px;
+  height: 1px;
+  background: var(--wood-lt);
+  margin: 10px auto 0;
+  transform-origin: center;
+  transform: scaleX(0);
+  opacity: 0;
+  animation: tagRuleIn 0.65s ease 1.0s both;
+  transition: width 0.4s ease;            /* hover 시 선 길어짐          */
+}
+.hero__tag-zone:hover .hero__tag::after {
+  width: 80px;
+}
+
+/* ── Zone ②: Photo ─────────────────────────────────────────
+   Full-bleed 사진 + CSS mask 하단 페이드 out                  */
 .hero__photo {
   position: relative;
+  z-index: 1;                             /* tag-zone(z:2) 의 그라데이션 아래 */
   width: 100%;
   flex-shrink: 0;
+  /* ② tag 이후 slide-up 등장 */
+  animation: heroPhotoIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.65s both;
 }
 .hero__photo img {
   width: 100%;
@@ -225,61 +318,80 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   display: block;
   -webkit-mask-image: linear-gradient(
     to bottom,
-    transparent 0%, rgba(0,0,0,.85) 7%,
-    black 24%, black 54%, transparent 100%
+    black 0%, black 54%, transparent 100%
   );
   mask-image: linear-gradient(
     to bottom,
-    transparent 0%, rgba(0,0,0,.85) 7%,
-    black 24%, black 54%, transparent 100%
+    black 0%, black 54%, transparent 100%
   );
 }
 
-/* Hero text area */
+/* ── Zone ③: Names ─────────────────────────────────────────
+   photo 아래 남은 공간 전체, 이름 세로 중앙                    */
 .hero__body {
+  flex: 1;
   width: 100%;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   padding: 0 var(--px);
-  margin-top: -60px;
+  margin-top: -52px;                    /* photo 하단 페이드와 겹침    */
   gap: 0;
+  /* ③ 마지막 등장 */
+  animation: heroBodyIn 0.9s cubic-bezier(0.4, 0, 0.2, 1) 1.1s both;
 }
 
-.hero__tag {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 0.68rem;
-  letter-spacing: 0.4em;
-  color: var(--muted);
-  text-transform: uppercase;
-  margin-bottom: 16px;
+/* ── Hero 입장 Keyframes ─────────────────────────────────── */
+@keyframes heroTagZoneIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
-.hero__rule {
-  width: 32px;
-  height: 1px;
-  background: var(--wood-lt);    /* 우드톤 구분선 */
-  margin: 16px auto;
+@keyframes heroTagTextIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
 }
+@keyframes tagRuleIn {
+  from { transform: scaleX(0); opacity: 0; }
+  to   { transform: scaleX(1); opacity: 1; }
+}
+@keyframes heroPhotoIn {
+  from { opacity: 0; transform: translateY(36px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+@keyframes heroBodyIn {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* ── Hero: names — 단독 콘텐츠이므로 더 크게 ────────────── */
 .hero__names {
   font-family: var(--serif);
-  font-size: clamp(1.6rem, 5vw, 2.2rem);
+  font-size: clamp(2.1rem, 7vw, 3.2rem); /* 기존 1.6~2.2rem → 확대 */
   font-weight: 400;
   letter-spacing: 0.08em;
   color: var(--text);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   line-height: 1.15;
 }
 .hero__amp {
   font-family: var(--serif);
   font-style: italic;
-  font-size: 1rem;
+  font-size: 1.2rem;
   color: var(--muted);
   font-weight: 400;
 }
+.hero__rule {
+  width: 32px;
+  height: 1px;
+  background: var(--wood-lt);
+  margin: 16px auto;
+}
+
+/* ── 날짜·장소 공통 텍스트 (date-info 섹션에서도 재사용) ── */
 .hero__date {
   font-family: var(--serif);
   font-size: 0.88rem;
@@ -293,6 +405,29 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   letter-spacing: 0.1em;
   color: var(--muted);
   margin-top: 5px;
+}
+
+/* ── Date Info Section — big_date 아래 이동된 정보 블록 ──── */
+.date-info-section {
+  background: var(--bg-white);
+  padding: 64px var(--px) 72px;
+  text-align: center;
+}
+.date-info-section .hero__date {
+  font-size: 1.05rem;            /* 이 섹션에서는 조금 더 크게      */
+  color: var(--text);
+  margin-top: 0;                 /* 섹션 첫 요소라 위 마진 제거     */
+  letter-spacing: 0.14em;
+}
+.date-info-section .hero__venue {
+  margin-top: 9px;
+  font-size: 0.82rem;
+}
+.date-info-section .hero__cal {
+  margin: 32px auto 0;           /* 가로 auto → 컨테이너 내 중앙   */
+}
+.date-info-section .countdown {
+  margin: 28px auto 0;           /* 가로 auto → 컨테이너 내 중앙   */
 }
 
 /* Countdown */
@@ -849,6 +984,92 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
 .bus__notes li + li { margin-top: 3px; }
 .bus__notes li::before { content: '※ '; }
 
+/* ── Bus: 단일 카드 (wrapper 없이 직접 배치) ─────────────── */
+/* .bus__cards 는 더 이상 사용하지 않지만 CSS 하위호환 유지    */
+.bus__card {
+  margin-bottom: 20px; /* cards wrapper 없이 쓸 때 간격 확보  */
+}
+
+/* 카드 헤더 우측: 목적지 표시 ── */
+.bus__dest {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.bus__dest svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 1.8;
+  flex-shrink: 0;
+}
+
+/* ── 정류장 타임라인 ──────────────────────────────────────── */
+.bus__stops {
+  list-style: none;
+  margin: 4px 0 20px;
+  padding: 0;
+  position: relative;
+}
+/* 정류장을 잇는 세로 연결선 */
+.bus__stops::before {
+  content: '';
+  position: absolute;
+  left: 14px;                /* 마커(30px) 중심 */
+  top: 30px;
+  bottom: 30px;
+  width: 1px;
+  background: var(--line);
+}
+.bus__stop {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 10px 0;
+}
+/* 원형 번호 마커 */
+.bus__stop-marker {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  background: var(--bg-off);
+  border: 1px solid var(--line-dk);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-style: italic;
+  font-size: 0.58rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  position: relative;
+  z-index: 1;               /* 연결선 위에 표시 */
+}
+/* 정류장 텍스트 */
+.bus__stop-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 4px;
+}
+.bus__stop-body strong {
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--text);
+}
+.bus__stop-body span {
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--wood);       /* 출발 시간: 우드톤 강조 */
+}
+
 /* ── 11. Account / Accordion ──────────────────────────────── */
 .account__intro {
   text-align: center;
@@ -1375,6 +1596,19 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
 .rsvp-modal .chip span {
   display: block;
   text-align: center;
+}
+
+/* ── Honeypot — 봇 방지 숨김 필드 ────────────────────────── */
+/* 화면에서 완전히 제거, 스크린 리더 제외                      */
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  tabindex: -1;
 }
 
 /* ── 19. Responsive ───────────────────────────────────────── */

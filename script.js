@@ -2,7 +2,7 @@
    script.js — Copenhagen Wedding Invitation
    Vanilla JS only · No external libraries
    ============================================================ */
-'use strict';
+"use strict";
 
 /* ── ZOOM PREVENTION ─────────────────────────────────────────
    viewport meta (user-scalable=no) is sufficient for most
@@ -10,80 +10,201 @@
    ─────────────────────────────────────────────────────────── */
 (function preventZoom() {
   /* Block pinch-to-zoom (multi-touch move) */
-  document.addEventListener('touchmove', function(e) {
-    if (e.touches && e.touches.length > 1) e.preventDefault();
-  }, { passive: false });
+  document.addEventListener(
+    "touchmove",
+    function (e) {
+      if (e.touches && e.touches.length > 1) e.preventDefault();
+    },
+    { passive: false },
+  );
 
   /* Block double-tap zoom (two taps within 300 ms) */
   var _lastTap = 0;
-  document.addEventListener('touchend', function(e) {
-    var now = Date.now();
-    if (now - _lastTap < 300) {
-      e.preventDefault();
-    }
-    _lastTap = now;
-  }, { passive: false });
-}());
+  document.addEventListener(
+    "touchend",
+    function (e) {
+      var now = Date.now();
+      if (now - _lastTap < 300) {
+        e.preventDefault();
+      }
+      _lastTap = now;
+    },
+    { passive: false },
+  );
+})();
 
 /* ── CONFIG ──────────────────────────────────────────────────
    결혼식 정보를 여기서 수정하세요.
    ─────────────────────────────────────────────────────────── */
 var CONFIG = {
-  weddingDate:      new Date('2026-10-04T14:30:00'),
-  guestbookKey:     'h1004day_gb_v2',
+  weddingDate: new Date("2026-10-04T14:30:00"),
+  guestbookKey: "h1004day_gb_v2",
+  /* ↓ Google Apps Script 웹앱 배포 후 URL을 아래에 붙여넣기        */
+  /* 예) 'https://script.google.com/macros/s/AKfycb.../exec'        */
+  sheetsUrl:
+    "https://script.google.com/macros/s/AKfycbx0pxeFiAZTVbocKOdJumgLBn5HOFjt7hsQ_Ccfuz_ZIkGledweLNnjJH66ahIFkd7n-g/exec",
 };
 
 /* ── UTILS ───────────────────────────────────────────────────*/
-var $ = function(sel, ctx) { return (ctx || document).querySelector(sel); };
-var $$ = function(sel, ctx) { return Array.from((ctx || document).querySelectorAll(sel)); };
-function pad(n) { return String(n).padStart(2, '0'); }
+var $ = function (sel, ctx) {
+  return (ctx || document).querySelector(sel);
+};
+var $$ = function (sel, ctx) {
+  return Array.from((ctx || document).querySelectorAll(sel));
+};
+function pad(n) {
+  return String(n).padStart(2, "0");
+}
 function esc(str) {
   return String(str)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 /* Toast */
 var _toastTimer = null;
 function toast(msg, ms) {
-  var el = $('#toast');
+  var el = $("#toast");
   if (!el) return;
   el.textContent = msg;
-  el.classList.add('show');
+  el.classList.add("show");
   clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(function() { el.classList.remove('show'); }, ms || 2600);
+  _toastTimer = setTimeout(function () {
+    el.classList.remove("show");
+  }, ms || 2600);
+}
+
+/* ── ANTI-SPAM ────────────────────────────────────────────────
+   ① 허니팟 필드 — 봇만 채우는 숨겨진 입력란
+   ② 최소 소요 시간 — 2초 미만이면 봇으로 간주
+   ③ 쿨다운 — 60초 안에 같은 폼 재제출 방지
+   ④ 텍스트 패턴 — URL 2개 이상 or 6자 이상 반복 문자 감지
+   ─────────────────────────────────────────────────────────── */
+var _spam = {
+  openedAt: {} /* { formId: timestamp } */,
+  lastSentAt: {} /* { formId: timestamp } */,
+  MIN_MS: 2000 /* 제출까지 최소 2초     */,
+  COOL_MS: 60000 /* 재제출까지 60초 쿨다운 */,
+};
+
+function spamOpen(id) {
+  /* 폼이 처음 열리거나 포커스될 때 호출 */
+  if (!_spam.openedAt[id]) {
+    _spam.openedAt[id] = Date.now();
+  }
+}
+
+function spamCheck(id, honeypot, text) {
+  /* 반환값: null = 정상 / 문자열 = 오류 메시지 */
+
+  /* ① 허니팟 필드가 채워졌으면 봇 */
+  if (honeypot && honeypot.trim()) {
+    return "잘못된 요청입니다.";
+  }
+
+  /* ② 너무 빨리 제출 → 봇 의심 */
+  var elapsed = Date.now() - (_spam.openedAt[id] || 0);
+  if (elapsed < _spam.MIN_MS) {
+    return "잠시 후 다시 시도해주세요.";
+  }
+
+  /* ③ 쿨다운 미경과 */
+  var gap = Date.now() - (_spam.lastSentAt[id] || 0);
+  if (gap < _spam.COOL_MS) {
+    var secs = Math.ceil((_spam.COOL_MS - gap) / 1000);
+    return secs + "초 후 다시 제출할 수 있습니다.";
+  }
+
+  /* ④ 텍스트 스팸 패턴 */
+  if (text) {
+    if ((text.match(/https?:\/\//gi) || []).length > 1) {
+      return "링크가 포함된 메시지는 등록할 수 없습니다.";
+    }
+    if (/(.)\1{5,}/.test(text)) {
+      return "비정상적인 입력이 감지되었습니다.";
+    }
+  }
+
+  return null; /* 정상 */
+}
+
+function spamMark(id) {
+  _spam.lastSentAt[id] = Date.now();
+}
+
+/* ── SHEETS SUBMIT ────────────────────────────────────────────
+   Google Apps Script 웹앱으로 폼 데이터를 전송합니다.
+   application/x-www-form-urlencoded 방식 사용.
+   GAS는 요청 시 script.google.com → script.googleusercontent.com
+   으로 리다이렉트하기 때문에 일반 fetch는 CORS 차단됩니다.
+   mode:'no-cors' 로 오류 없이 전송 — 데이터는 정상 저장되고
+   응답 본문만 읽을 수 없으므로 낙관적(optimistic) 성공 처리.
+   ─────────────────────────────────────────────────────────── */
+function sheetsSubmit(payload, onOk, onErr) {
+  if (!CONFIG.sheetsUrl) {
+    /* sheetsUrl 미설정 = 데모 모드 */
+    if (onOk) {
+      onOk({ result: "success", _demo: true });
+    }
+    return;
+  }
+  fetch(CONFIG.sheetsUrl, {
+    method: "POST",
+    mode: "no-cors",   /* GAS 리다이렉트로 인한 CORS 차단 우회 */
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams(payload).toString(),
+  })
+    .then(function () {
+      /* no-cors: 응답 본문을 읽을 수 없음 → 낙관적 성공 처리   */
+      /* 데이터는 Google Sheets에 정상 저장됨                    */
+      if (onOk) {
+        onOk({ result: "success" });
+      }
+    })
+    .catch(function () {
+      if (onErr) {
+        onErr("네트워크 오류. 다시 시도해주세요.");
+      }
+    });
 }
 
 /* ── LUCIDE ICONS ─────────────────────────────────────────── */
 /* Initialise all data-lucide icons in the document            */
 function initIcons() {
-  if (window.lucide && typeof lucide.createIcons === 'function') {
+  if (window.lucide && typeof lucide.createIcons === "function") {
     lucide.createIcons();
   }
 }
 
 /* ── COUNTDOWN ───────────────────────────────────────────────*/
 (function initCountdown() {
-  var dEl = $('#cnt-days'), hEl = $('#cnt-hours'),
-      mEl = $('#cnt-mins'), sEl = $('#cnt-secs');
+  var dEl = $("#cnt-days"),
+    hEl = $("#cnt-hours"),
+    mEl = $("#cnt-mins"),
+    sEl = $("#cnt-secs");
   if (!dEl) return;
 
   function tick() {
     var diff = CONFIG.weddingDate - Date.now();
     if (diff <= 0) {
-      var box = $('#countdown');
-      if (box) box.innerHTML = '<p style="font-family:var(--serif);font-style:italic;font-size:.9rem;letter-spacing:.1em;color:var(--muted);">D - Day</p>';
+      var box = $("#countdown");
+      if (box)
+        box.innerHTML =
+          '<p style="font-family:var(--serif);font-style:italic;font-size:.9rem;letter-spacing:.1em;color:var(--muted);">D - Day</p>';
       return;
     }
     var s = Math.floor(diff / 1000);
     dEl.textContent = Math.floor(s / 86400);
-    hEl.textContent = pad(Math.floor(s % 86400 / 3600));
-    mEl.textContent = pad(Math.floor(s % 3600 / 60));
+    hEl.textContent = pad(Math.floor((s % 86400) / 3600));
+    mEl.textContent = pad(Math.floor((s % 3600) / 60));
     sEl.textContent = pad(s % 60);
   }
   tick();
   setInterval(tick, 1000);
-}());
+})();
 
 /* ── SCROLL REVEAL (IntersectionObserver) ────────────────────
    Progressive enhancement:
@@ -91,214 +212,256 @@ function initIcons() {
    - Observer adds 'in-view' when element enters viewport
    - Without JS / on error → content is always visible         */
 (function initReveal() {
-  if (!('IntersectionObserver' in window)) return;
-  document.documentElement.classList.add('io-ready');
+  if (!("IntersectionObserver" in window)) return;
+  document.documentElement.classList.add("io-ready");
 
-  var observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) {
-      if (e.isIntersecting) {
-        e.target.classList.add('in-view');
-        observer.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.08 });
+  var observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add("in-view");
+          observer.unobserve(e.target);
+        }
+      });
+    },
+    { threshold: 0.08 },
+  );
 
-  $$('.reveal').forEach(function(el) { observer.observe(el); });
-}());
+  $$(".reveal").forEach(function (el) {
+    observer.observe(el);
+  });
+})();
 
 /* ── SCROLL IMAGE (parallax + reveal) ───────────────────────
    ① IntersectionObserver → .is-visible → CSS fade+scale-in
    ② scroll 이벤트 → translateY ±24 px 패럴랙스
    ─────────────────────────────────────────────────────────── */
 (function initScrollImg() {
-  var section = document.getElementById('scroll_Img');
-  var photo   = document.getElementById('scroll-img-photo');
+  var section = document.getElementById("scroll_Img");
+  var photo = document.getElementById("scroll-img-photo");
   if (!section || !photo) return;
 
   /* ① 뷰포트 진입 시 이미지 페이드+스케일 인 */
-  if ('IntersectionObserver' in window) {
-    var revealObs = new IntersectionObserver(function(entries) {
-      entries.forEach(function(e) {
-        if (e.isIntersecting) {
-          photo.classList.add('is-visible');
-          revealObs.unobserve(section);
-        }
-      });
-    }, { threshold: 0.06 });
+  if ("IntersectionObserver" in window) {
+    var revealObs = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            photo.classList.add("is-visible");
+            revealObs.unobserve(section);
+          }
+        });
+      },
+      { threshold: 0.06 },
+    );
     revealObs.observe(section);
   } else {
-    photo.classList.add('is-visible');
+    photo.classList.add("is-visible");
   }
 
   /* ② 스크롤 패럴랙스 */
   function tick() {
-    var rect     = section.getBoundingClientRect();
-    var wh       = window.innerHeight;
+    var rect = section.getBoundingClientRect();
+    var wh = window.innerHeight;
     if (rect.bottom < 0 || rect.top > wh) return;
     var progress = (wh - rect.top) / (wh + rect.height); /* 0→1 */
-    var shift    = (progress - 0.5) * 48;                /* ±24 px */
+    var shift = (progress - 0.5) * 48; /* ±24 px */
     /* .is-visible 이후에만 패럴랙스 transform 적용 (CSS 애니메이션과 충돌 방지) */
-    if (photo.classList.contains('is-visible')) {
-      photo.style.transform = 'translateY(' + shift.toFixed(1) + 'px) scale(1)';
+    if (photo.classList.contains("is-visible")) {
+      photo.style.transform = "translateY(" + shift.toFixed(1) + "px) scale(1)";
     }
   }
-  window.addEventListener('scroll', tick, { passive: true });
+  window.addEventListener("scroll", tick, { passive: true });
   tick();
-}());
+})();
 
 /* ── PETALS ──────────────────────────────────────────────────
    Creates N <div class="petal"> elements inside #petals-canvas.
    Size, position, duration, delay are randomised per petal.
    ─────────────────────────────────────────────────────────── */
 (function initPetals() {
-  var canvas = document.getElementById('petals-canvas');
+  var canvas = document.getElementById("petals-canvas");
   if (!canvas) return;
 
   var N = 22;
   for (var i = 0; i < N; i++) {
-    var p = document.createElement('div');
-    p.className = 'petal';
+    var p = document.createElement("div");
+    p.className = "petal";
 
-    var size  = 6  + Math.random() * 9;          /* 6–15 px        */
-    var left  = Math.random() * 106 - 3;          /* -3 % – 103 %   */
-    var dur   = 10 + Math.random() * 12;          /* 10–22 s        */
-    var delay = -Math.random() * 20;              /* already in-flight */
+    var size = 6 + Math.random() * 9; /* 6–15 px        */
+    var left = Math.random() * 106 - 3; /* -3 % – 103 %   */
+    var dur = 10 + Math.random() * 12; /* 10–22 s        */
+    var delay = -Math.random() * 20; /* already in-flight */
 
     p.style.cssText =
-      'left:'               + left.toFixed(1)  + '%;' +
-      'width:'              + size.toFixed(1)  + 'px;' +
-      'height:'             + size.toFixed(1)  + 'px;' +
-      'animation-duration:' + dur.toFixed(1)   + 's;' +
-      'animation-delay:'    + delay.toFixed(1) + 's;';
+      "left:" +
+      left.toFixed(1) +
+      "%;" +
+      "width:" +
+      size.toFixed(1) +
+      "px;" +
+      "height:" +
+      size.toFixed(1) +
+      "px;" +
+      "animation-duration:" +
+      dur.toFixed(1) +
+      "s;" +
+      "animation-delay:" +
+      delay.toFixed(1) +
+      "s;";
 
     canvas.appendChild(p);
   }
-}());
+})();
 
 /* ── GALLERY MODAL ───────────────────────────────────────────*/
 (function initGallery() {
-  var items   = $$('.gallery__item');
-  var modal   = $('#gallery-modal');
-  var img     = $('#gallery-modal-img');
-  var counter = $('#gallery-modal-counter');
-  var btnPrev = $('.gallery-modal__prev', modal);
-  var btnNext = $('.gallery-modal__next', modal);
-  var btnClose= $('.gallery-modal__close', modal);
-  var backdrop= $('.gallery-modal__backdrop', modal);
+  var items = $$(".gallery__item");
+  var modal = $("#gallery-modal");
+  var img = $("#gallery-modal-img");
+  var counter = $("#gallery-modal-counter");
+  var btnPrev = $(".gallery-modal__prev", modal);
+  var btnNext = $(".gallery-modal__next", modal);
+  var btnClose = $(".gallery-modal__close", modal);
+  var backdrop = $(".gallery-modal__backdrop", modal);
   if (!modal || !items.length) return;
 
   /* Collect image sources from gallery items */
-  var srcs = items.map(function(item) {
-    var i = item.querySelector('img');
-    return i ? i.src : '';
+  var srcs = items.map(function (item) {
+    var i = item.querySelector("img");
+    return i ? i.src : "";
   });
   var current = 0;
 
   function show(idx) {
     current = (idx + srcs.length) % srcs.length;
     /* Re-trigger animation */
-    img.style.animation = 'none';
-    img.offsetHeight;                      /* reflow */
-    img.style.animation = '';
+    img.style.animation = "none";
+    img.offsetHeight; /* reflow */
+    img.style.animation = "";
     img.src = srcs[current];
-    img.alt = '사진 ' + (current + 1);
-    if (counter) counter.textContent = (current + 1) + ' / ' + srcs.length;
+    img.alt = "사진 " + (current + 1);
+    if (counter) counter.textContent = current + 1 + " / " + srcs.length;
   }
 
   function open(idx) {
     show(idx);
-    modal.removeAttribute('hidden');
-    document.body.style.overflow = 'hidden';
+    modal.removeAttribute("hidden");
+    document.body.style.overflow = "hidden";
     btnClose && btnClose.focus();
   }
 
   function close() {
-    modal.setAttribute('hidden', '');
-    document.body.style.overflow = '';
+    modal.setAttribute("hidden", "");
+    document.body.style.overflow = "";
     items[current] && items[current].focus();
   }
 
   /* Gallery item click */
-  items.forEach(function(item) {
-    item.addEventListener('click', function() {
-      open(parseInt(item.dataset.idx || '0', 10));
+  items.forEach(function (item) {
+    item.addEventListener("click", function () {
+      open(parseInt(item.dataset.idx || "0", 10));
     });
-    item.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); item.click(); }
+    item.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        item.click();
+      }
     });
   });
 
-  if (btnPrev)  btnPrev.addEventListener('click',  function() { show(current - 1); });
-  if (btnNext)  btnNext.addEventListener('click',  function() { show(current + 1); });
-  if (btnClose) btnClose.addEventListener('click', close);
-  if (backdrop) backdrop.addEventListener('click', close);
+  if (btnPrev)
+    btnPrev.addEventListener("click", function () {
+      show(current - 1);
+    });
+  if (btnNext)
+    btnNext.addEventListener("click", function () {
+      show(current + 1);
+    });
+  if (btnClose) btnClose.addEventListener("click", close);
+  if (backdrop) backdrop.addEventListener("click", close);
 
   /* Keyboard */
-  document.addEventListener('keydown', function(e) {
-    if (modal.hasAttribute('hidden')) return;
-    if (e.key === 'Escape')      close();
-    if (e.key === 'ArrowLeft')   show(current - 1);
-    if (e.key === 'ArrowRight')  show(current + 1);
+  document.addEventListener("keydown", function (e) {
+    if (modal.hasAttribute("hidden")) return;
+    if (e.key === "Escape") close();
+    if (e.key === "ArrowLeft") show(current - 1);
+    if (e.key === "ArrowRight") show(current + 1);
   });
 
   /* Touch swipe */
   var touchStartX = 0;
-  modal.addEventListener('touchstart', function(e) {
-    touchStartX = e.changedTouches[0].clientX;
-  }, { passive: true });
-  modal.addEventListener('touchend', function(e) {
-    var dx = e.changedTouches[0].clientX - touchStartX;
-    if (Math.abs(dx) > 48) { dx < 0 ? show(current + 1) : show(current - 1); }
-  }, { passive: true });
-}());
+  modal.addEventListener(
+    "touchstart",
+    function (e) {
+      touchStartX = e.changedTouches[0].clientX;
+    },
+    { passive: true },
+  );
+  modal.addEventListener(
+    "touchend",
+    function (e) {
+      var dx = e.changedTouches[0].clientX - touchStartX;
+      if (Math.abs(dx) > 48) {
+        dx < 0 ? show(current + 1) : show(current - 1);
+      }
+    },
+    { passive: true },
+  );
+})();
 
 /* ── ACCORDION (max-height animation) ───────────────────────*/
 (function initAccordion() {
-  $$('.accordion__btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var isOpen = btn.getAttribute('aria-expanded') === 'true';
-      var bodyId = btn.getAttribute('aria-controls');
-      var body   = bodyId ? $('#' + bodyId) : btn.nextElementSibling;
+  $$(".accordion__btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var isOpen = btn.getAttribute("aria-expanded") === "true";
+      var bodyId = btn.getAttribute("aria-controls");
+      var body = bodyId ? $("#" + bodyId) : btn.nextElementSibling;
       if (!body) return;
 
-      btn.setAttribute('aria-expanded', String(!isOpen));
+      btn.setAttribute("aria-expanded", String(!isOpen));
       if (isOpen) {
-        body.classList.remove('open');
+        body.classList.remove("open");
       } else {
-        body.classList.add('open');
+        body.classList.add("open");
       }
     });
   });
-}());
+})();
 
 /* ── COPY TO CLIPBOARD ───────────────────────────────────────*/
 (function initCopy() {
-  $$('.copy-btn').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-      var text = btn.getAttribute('data-copy');
+  $$(".copy-btn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var text = btn.getAttribute("data-copy");
       if (!text) return;
 
       function onOk() {
-        btn.classList.add('copied');
-        var span = btn.querySelector('span');
-        var orig = span ? span.textContent : '';
-        if (span) span.textContent = '완료 ✓';
-        toast('계좌번호가 복사되었습니다.');
-        setTimeout(function() {
-          btn.classList.remove('copied');
+        btn.classList.add("copied");
+        var span = btn.querySelector("span");
+        var orig = span ? span.textContent : "";
+        if (span) span.textContent = "완료 ✓";
+        toast("계좌번호가 복사되었습니다.");
+        setTimeout(function () {
+          btn.classList.remove("copied");
           if (span) span.textContent = orig;
         }, 2200);
       }
 
       function fallback() {
-        var inp = document.createElement('input');
+        var inp = document.createElement("input");
         inp.value = text;
-        inp.style.cssText = 'position:fixed;top:-9999px;left:-9999px;opacity:0;';
+        inp.style.cssText =
+          "position:fixed;top:-9999px;left:-9999px;opacity:0;";
         document.body.appendChild(inp);
         inp.select();
         inp.setSelectionRange(0, 9999);
-        try { document.execCommand('copy'); onOk(); }
-        catch(e) { toast('직접 길게 눌러 복사해주세요.'); }
+        try {
+          document.execCommand("copy");
+          onOk();
+        } catch (e) {
+          toast("직접 길게 눌러 복사해주세요.");
+        }
         document.body.removeChild(inp);
       }
 
@@ -309,20 +472,23 @@ function initIcons() {
       }
     });
   });
-}());
+})();
 
 /* ── GUESTBOOK ───────────────────────────────────────────────*/
 (function initGuestbook() {
-  var form    = $('#guestbook-form');
-  var list    = $('#guestbook-list');
-  var msgArea = $('#gb-message');
-  var cntEl   = $('#gb-count');
+  var form = $("#guestbook-form");
+  var list = $("#guestbook-list");
+  var msgArea = $("#gb-message");
+  var cntEl = $("#gb-count");
   if (!form || !list) return;
 
   /* Storage */
   function load() {
-    try { return JSON.parse(localStorage.getItem(CONFIG.guestbookKey) || '[]'); }
-    catch(e) { return []; }
+    try {
+      return JSON.parse(localStorage.getItem(CONFIG.guestbookKey) || "[]");
+    } catch (e) {
+      return [];
+    }
   }
   function save(entries) {
     localStorage.setItem(CONFIG.guestbookKey, JSON.stringify(entries));
@@ -340,169 +506,268 @@ function initIcons() {
 
   function formatDt(d) {
     var dt = new Date(d);
-    return dt.getFullYear() + '.' +
-           pad(dt.getMonth() + 1) + '.' +
-           pad(dt.getDate()) + ' ' +
-           pad(dt.getHours()) + ':' +
-           pad(dt.getMinutes());
+    return (
+      dt.getFullYear() +
+      "." +
+      pad(dt.getMonth() + 1) +
+      "." +
+      pad(dt.getDate()) +
+      " " +
+      pad(dt.getHours()) +
+      ":" +
+      pad(dt.getMinutes())
+    );
   }
 
   /* Render */
   function render() {
     var entries = load();
-    list.innerHTML = '';
+    list.innerHTML = "";
     if (!entries.length) {
-      list.innerHTML = '<p class="gb-empty">아직 방명록이 없습니다.<br>첫 번째로 메시지를 남겨보세요.</p>';
+      list.innerHTML =
+        '<p class="gb-empty">아직 방명록이 없습니다.<br>첫 번째로 메시지를 남겨보세요.</p>';
       return;
     }
-    entries.slice().reverse().forEach(function(e) {
-      var el = document.createElement('article');
-      el.className = 'gb-entry';
-      el.innerHTML =
-        '<div class="gb-entry__top">' +
-          '<span class="gb-entry__name">' + esc(e.name) + '</span>' +
+    entries
+      .slice()
+      .reverse()
+      .forEach(function (e) {
+        var el = document.createElement("article");
+        el.className = "gb-entry";
+        el.innerHTML =
+          '<div class="gb-entry__top">' +
+          '<span class="gb-entry__name">' +
+          esc(e.name) +
+          "</span>" +
           '<span class="gb-entry__right">' +
-            '<span class="gb-entry__date">' + e.date + '</span>' +
-            '<button class="gb-entry__del" type="button" aria-label="삭제">삭제</button>' +
-          '</span>' +
-        '</div>' +
-        '<p class="gb-entry__msg">' + esc(e.msg).replace(/\n/g, '<br>') + '</p>';
-      el.querySelector('.gb-entry__del').addEventListener('click', function() {
-        openPwModal(e.id, e.ph);
+          '<span class="gb-entry__date">' +
+          e.date +
+          "</span>" +
+          '<button class="gb-entry__del" type="button" aria-label="삭제">삭제</button>' +
+          "</span>" +
+          "</div>" +
+          '<p class="gb-entry__msg">' +
+          esc(e.msg).replace(/\n/g, "<br>") +
+          "</p>";
+        el.querySelector(".gb-entry__del").addEventListener(
+          "click",
+          function () {
+            openPwModal(e.id, e.ph);
+          },
+        );
+        list.appendChild(el);
       });
-      list.appendChild(el);
-    });
   }
 
-  /* Submit */
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    var name = $('#gb-name').value.trim();
-    var pw   = $('#gb-password').value.trim();
-    var msg  = msgArea.value.trim();
-    if (!name || !pw || !msg) { toast('이름, 비밀번호, 메시지를 입력해주세요.'); return; }
-    if (msg.length > 200) { toast('메시지는 200자 이내로 입력해주세요.'); return; }
+  /* 폼 첫 상호작용 시 스팸 타이머 시작 */
+  ["focusin", "input"].forEach(function (ev) {
+    form.addEventListener(
+      ev,
+      function () {
+        spamOpen("guestbook");
+      },
+      { once: true },
+    );
+  });
 
+  /* Submit */
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var name = $("#gb-name").value.trim();
+    var pw = $("#gb-password").value.trim();
+    var msg = msgArea.value.trim();
+    var hpEl = form.querySelector('[name="website"]');
+    var hpVal = hpEl ? hpEl.value : "";
+
+    if (!name || !pw || !msg) {
+      toast("이름, 비밀번호, 메시지를 입력해주세요.");
+      return;
+    }
+    if (msg.length > 200) {
+      toast("메시지는 200자 이내로 입력해주세요.");
+      return;
+    }
+
+    /* 스팸 검사 */
+    var spamErr = spamCheck("guestbook", hpVal, msg);
+    if (spamErr) {
+      toast(spamErr);
+      return;
+    }
+
+    /* localStorage 저장 — 즉시 화면에 표시 */
     var entries = load();
     entries.push({
-      id:   Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
       name: name,
-      msg:  msg,
-      ph:   hash(pw),
+      msg: msg,
+      ph: hash(pw),
       date: formatDt(Date.now()),
     });
     save(entries);
     form.reset();
-    if (cntEl) cntEl.textContent = '0 / 200';
+    if (cntEl) cntEl.textContent = "0 / 200";
     render();
-    toast('메시지가 등록되었습니다.');
+    toast("메시지가 등록되었습니다.");
+    spamMark("guestbook");
+
+    /* Google Sheets 전송 (백그라운드 — 실패해도 UI 영향 없음) */
+    sheetsSubmit(
+      {
+        type: "guestbook",
+        name: name,
+        message: msg,
+        website: hpVal,
+      },
+      null,
+      function (err) {
+        console.warn("[Guestbook → Sheets] 전송 오류:", err);
+      },
+    );
   });
 
   /* Char counter */
   if (msgArea && cntEl) {
-    msgArea.addEventListener('input', function() {
-      cntEl.textContent = msgArea.value.length + ' / 200';
+    msgArea.addEventListener("input", function () {
+      cntEl.textContent = msgArea.value.length + " / 200";
     });
   }
 
   /* Password modal */
-  var modal    = $('#pw-modal');
-  var pwInput  = $('#pw-modal-input');
-  var btnCancel= $('#pw-modal-cancel');
-  var btnConf  = $('#pw-modal-confirm');
+  var modal = $("#pw-modal");
+  var pwInput = $("#pw-modal-input");
+  var btnCancel = $("#pw-modal-cancel");
+  var btnConf = $("#pw-modal-confirm");
   var _pendingId = null;
   var _pendingPh = null;
 
   function openPwModal(id, ph) {
-    _pendingId = id; _pendingPh = ph;
-    if (pwInput) { pwInput.value = ''; pwInput.placeholder = ' '; }
-    modal.removeAttribute('hidden');
-    setTimeout(function() { pwInput && pwInput.focus(); }, 50);
+    _pendingId = id;
+    _pendingPh = ph;
+    if (pwInput) {
+      pwInput.value = "";
+      pwInput.placeholder = " ";
+    }
+    modal.removeAttribute("hidden");
+    setTimeout(function () {
+      pwInput && pwInput.focus();
+    }, 50);
   }
   function closePwModal() {
-    modal.setAttribute('hidden', '');
-    _pendingId = null; _pendingPh = null;
+    modal.setAttribute("hidden", "");
+    _pendingId = null;
+    _pendingPh = null;
   }
   function tryDelete() {
-    var val = pwInput ? pwInput.value.trim() : '';
+    var val = pwInput ? pwInput.value.trim() : "";
     if (hash(val) === _pendingPh) {
-      save(load().filter(function(e) { return e.id !== _pendingId; }));
+      save(
+        load().filter(function (e) {
+          return e.id !== _pendingId;
+        }),
+      );
       render();
-      toast('삭제되었습니다.');
+      toast("삭제되었습니다.");
       closePwModal();
     } else {
-      pwInput.value = '';
-      pwInput.style.animation = 'none';
+      pwInput.value = "";
+      pwInput.style.animation = "none";
       pwInput.offsetHeight;
-      pwInput.style.animation = 'shake .35s ease';
-      toast('비밀번호가 일치하지 않습니다.');
+      pwInput.style.animation = "shake .35s ease";
+      toast("비밀번호가 일치하지 않습니다.");
     }
   }
 
-  if (btnCancel) btnCancel.addEventListener('click', closePwModal);
-  if (btnConf)   btnConf.addEventListener('click', tryDelete);
-  if (pwInput)   pwInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') tryDelete();
-  });
-  if (modal) modal.addEventListener('click', function(e) {
-    if (e.target === modal) closePwModal();
-  });
+  if (btnCancel) btnCancel.addEventListener("click", closePwModal);
+  if (btnConf) btnConf.addEventListener("click", tryDelete);
+  if (pwInput)
+    pwInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") tryDelete();
+    });
+  if (modal)
+    modal.addEventListener("click", function (e) {
+      if (e.target === modal) closePwModal();
+    });
 
   /* Shake keyframe */
-  var s = document.createElement('style');
-  s.textContent = '@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}';
+  var s = document.createElement("style");
+  s.textContent =
+    "@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}";
   document.head.appendChild(s);
 
   render();
-}());
+})();
 
 /* ── RSVP FORM ───────────────────────────────────────────────*/
 (function initRSVP() {
-  var form   = $('#rsvp-form');
-  var result = $('#rsvp-result');
-  var btn    = $('#rsvp-submit');
+  var form = $("#rsvp-form");
+  var result = $("#rsvp-result");
+  var btn = $("#rsvp-submit");
   if (!form) return;
 
-  form.addEventListener('submit', function(e) {
+  form.addEventListener("submit", function (e) {
     e.preventDefault();
-    var name  = $('#rsvp-name').value.trim();
-    var phone = $('#rsvp-phone').value.trim();
-    var att   = $('input[name="attendance"]:checked');
-    if (!name)  { toast('이름을 입력해주세요.'); $('#rsvp-name').focus(); return; }
-    if (!phone) { toast('연락처를 입력해주세요.'); $('#rsvp-phone').focus(); return; }
-    if (!att)   { toast('참석 여부를 선택해주세요.'); return; }
+    var name = $("#rsvp-name").value.trim();
+    var phone = $("#rsvp-phone").value.trim();
+    var att = $('input[name="attendance"]:checked');
+    if (!name) {
+      toast("이름을 입력해주세요.");
+      $("#rsvp-name").focus();
+      return;
+    }
+    if (!phone) {
+      toast("연락처를 입력해주세요.");
+      $("#rsvp-phone").focus();
+      return;
+    }
+    if (!att) {
+      toast("참석 여부를 선택해주세요.");
+      return;
+    }
 
     /* Demo mode if Formspree ID not set */
-    if (form.action.includes('YOUR_FORM_ID')) {
-      if (result) { result.textContent = '(데모) 전달 완료! Formspree ID를 교체해주세요.'; result.className = 'rsvp-form__result ok'; }
-      toast('✓ 전달 완료 (데모 모드)');
+    if (form.action.includes("YOUR_FORM_ID")) {
+      if (result) {
+        result.textContent = "(데모) 전달 완료! Formspree ID를 교체해주세요.";
+        result.className = "rsvp-form__result ok";
+      }
+      toast("✓ 전달 완료 (데모 모드)");
       return;
     }
 
     btn.disabled = true;
-    btn.textContent = '전송 중…';
+    btn.textContent = "전송 중…";
 
     fetch(form.action, {
-      method: 'POST',
+      method: "POST",
       body: new FormData(form),
-      headers: { Accept: 'application/json' },
-    }).then(function(res) {
-      if (res.ok) {
-        if (result) { result.textContent = '참석 의사가 전달되었습니다. 감사합니다.'; result.className = 'rsvp-form__result ok'; }
-        toast('✓ 전달 완료!');
-        form.reset();
-      } else {
-        throw new Error('서버 오류');
-      }
-    }).catch(function(err) {
-      if (result) { result.textContent = '전송에 실패했습니다. 다시 시도해주세요.'; result.className = 'rsvp-form__result err'; }
-      toast('전송 실패. 다시 시도해주세요.');
-    }).finally(function() {
-      btn.disabled = false;
-      btn.textContent = '참석 의사 전달하기';
-    });
+      headers: { Accept: "application/json" },
+    })
+      .then(function (res) {
+        if (res.ok) {
+          if (result) {
+            result.textContent = "참석 의사가 전달되었습니다. 감사합니다.";
+            result.className = "rsvp-form__result ok";
+          }
+          toast("✓ 전달 완료!");
+          form.reset();
+        } else {
+          throw new Error("서버 오류");
+        }
+      })
+      .catch(function (err) {
+        if (result) {
+          result.textContent = "전송에 실패했습니다. 다시 시도해주세요.";
+          result.className = "rsvp-form__result err";
+        }
+        toast("전송 실패. 다시 시도해주세요.");
+      })
+      .finally(function () {
+        btn.disabled = false;
+        btn.textContent = "참석 의사 전달하기";
+      });
   });
-}());
+})();
 
 /* ── RSVP MODAL (auto-open on page load) ─────────────────────
    Opens 400 ms after page load so the page has time to paint.
@@ -510,93 +775,124 @@ function initIcons() {
    On successful Formspree submit, auto-closes after 2 s.
    ─────────────────────────────────────────────────────────── */
 (function initRSVPModal() {
-  var modal    = document.getElementById('rsvp-modal');
-  var backdrop = document.getElementById('rsvp-modal-backdrop');
-  var btnClose = document.getElementById('rsvp-modal-close');
-  var btnSkip  = document.getElementById('rsvp-modal-skip');
-  var form     = document.getElementById('rsvp-m-form');
-  var result   = document.getElementById('rsvp-m-result');
-  var btn      = document.getElementById('rsvp-m-submit');
+  var modal = document.getElementById("rsvp-modal");
+  var backdrop = document.getElementById("rsvp-modal-backdrop");
+  var btnClose = document.getElementById("rsvp-modal-close");
+  var btnSkip = document.getElementById("rsvp-modal-skip");
+  var form = document.getElementById("rsvp-m-form");
+  var result = document.getElementById("rsvp-m-result");
+  var btn = document.getElementById("rsvp-m-submit");
   if (!modal) return;
 
   function openModal() {
-    modal.removeAttribute('hidden');
-    document.body.style.overflow = 'hidden';
+    modal.removeAttribute("hidden");
+    document.body.style.overflow = "hidden";
+    spamOpen("rsvp"); /* 모달 열린 시각 기록 */
     /* Ensure lucide icons inside modal are rendered */
-    if (window.lucide && typeof lucide.createIcons === 'function') {
+    if (window.lucide && typeof lucide.createIcons === "function") {
       lucide.createIcons({ nodes: [modal] });
     }
   }
 
   function closeModal() {
-    modal.setAttribute('hidden', '');
-    document.body.style.overflow = '';
+    modal.setAttribute("hidden", "");
+    document.body.style.overflow = "";
   }
 
   /* Auto-open: 400 ms delay lets the page render first */
   setTimeout(openModal, 400);
 
   /* Close triggers */
-  if (btnClose)  btnClose.addEventListener('click', closeModal);
-  if (btnSkip)   btnSkip.addEventListener('click', closeModal);
-  if (backdrop)  backdrop.addEventListener('click', closeModal);
-  document.addEventListener('keydown', function(e) {
-    if (!modal.hasAttribute('hidden') && e.key === 'Escape') closeModal();
+  if (btnClose) btnClose.addEventListener("click", closeModal);
+  if (btnSkip) btnSkip.addEventListener("click", closeModal);
+  if (backdrop) backdrop.addEventListener("click", closeModal);
+  document.addEventListener("keydown", function (e) {
+    if (!modal.hasAttribute("hidden") && e.key === "Escape") closeModal();
   });
 
   /* Form submit */
   if (!form) return;
-  form.addEventListener('submit', function(e) {
+  form.addEventListener("submit", function (e) {
     e.preventDefault();
-    var nameEl  = document.getElementById('rsvp-m-name');
-    var phoneEl = document.getElementById('rsvp-m-phone');
-    var att     = form.querySelector('input[name="m-attendance"]:checked');
+    var nameEl = document.getElementById("rsvp-m-name");
+    var att = form.querySelector('input[name="m-attendance"]:checked');
+    var hpEl = form.querySelector('[name="website"]');
+    var hpVal = hpEl ? hpEl.value : "";
 
-    if (!nameEl.value.trim())  { toast('이름을 입력해주세요.');  nameEl.focus();  return; }
-    if (!phoneEl.value.trim()) { toast('연락처를 입력해주세요.'); phoneEl.focus(); return; }
-    if (!att)                  { toast('참석 여부를 선택해주세요.'); return; }
-
-    /* Demo mode */
-    if (form.action.includes('YOUR_FORM_ID')) {
-      if (result) {
-        result.textContent = '(데모) 전달 완료! Formspree ID를 교체해주세요.';
-        result.className = 'rsvp-form__result ok';
+    /* 필수 입력 검사 */
+    if (!nameEl || !nameEl.value.trim()) {
+      toast("이름을 입력해주세요.");
+      if (nameEl) {
+        nameEl.focus();
       }
-      toast('✓ 전달 완료 (데모 모드)');
+      return;
+    }
+    if (!att) {
+      toast("참석 여부를 선택해주세요.");
+      return;
+    }
+
+    /* 스팸 검사 */
+    var spamErr = spamCheck("rsvp", hpVal, nameEl.value);
+    if (spamErr) {
+      toast(spamErr);
+      return;
+    }
+
+    /* sheetsUrl 미설정 = 데모 모드 */
+    if (!CONFIG.sheetsUrl) {
+      if (result) {
+        result.textContent =
+          "(데모) 전달 완료! Apps Script URL을 입력해주세요.";
+        result.className = "rsvp-form__result ok";
+      }
+      toast("✓ 전달 완료 (데모 모드)");
+      spamMark("rsvp");
       setTimeout(closeModal, 1800);
       return;
     }
 
+    var mealEl = form.querySelector('input[name="m-meal"]:checked');
+    var guestsEl = document.getElementById("rsvp-m-guests");
+
     btn.disabled = true;
-    btn.textContent = '전송 중…';
-    fetch(form.action, {
-      method: 'POST',
-      body: new FormData(form),
-      headers: { Accept: 'application/json' },
-    }).then(function(res) {
-      if (res.ok) {
+    btn.textContent = "전송 중…";
+
+    sheetsSubmit(
+      {
+        type: "rsvp",
+        name: nameEl.value.trim(),
+        attendance: att.value,
+        meal: mealEl ? mealEl.value : "-",
+        guests: guestsEl ? guestsEl.value : "1",
+        website: hpVal,
+      },
+      function () {
+        /* 성공 */
         if (result) {
-          result.textContent = '참석 의사가 전달되었습니다. 감사합니다.';
-          result.className = 'rsvp-form__result ok';
+          result.textContent = "참석 의사가 전달되었습니다. 감사합니다.";
+          result.className = "rsvp-form__result ok";
         }
-        toast('✓ 전달 완료!');
+        toast("✓ 전달 완료!");
         form.reset();
+        spamMark("rsvp");
+        btn.disabled = false;
+        btn.textContent = "참석 의사 전달하기";
         setTimeout(closeModal, 2000);
-      } else {
-        throw new Error('server');
-      }
-    }).catch(function() {
-      if (result) {
-        result.textContent = '전송 실패. 다시 시도해주세요.';
-        result.className = 'rsvp-form__result err';
-      }
-      toast('전송 실패. 다시 시도해주세요.');
-    }).finally(function() {
-      btn.disabled = false;
-      btn.textContent = '참석 의사 전달하기';
-    });
+      },
+      function (errMsg) {
+        /* 실패 */
+        if (result) {
+          result.textContent = errMsg || "전송 실패. 다시 시도해주세요.";
+          result.className = "rsvp-form__result err";
+        }
+        toast("전송 실패. 다시 시도해주세요.");
+        btn.disabled = false;
+        btn.textContent = "참석 의사 전달하기";
+      },
+    );
   });
-}());
+})();
 
 /* ── INIT LUCIDE ICONS ───────────────────────────────────────*/
 /* Must run last so all data-lucide elements exist in DOM      */

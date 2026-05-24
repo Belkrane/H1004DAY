@@ -54,9 +54,10 @@
     <!--
       Noto Sans KR   — 한글 본문 산세리프 (가독성 우수)
       Nanum Myeongjo — 한글 세리프 포인트체 (제목·날짜·장식)
+      Great Vibes    — 고급 웨딩 캘리그래피 필기체 (hero tag)
     -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap"
       rel="stylesheet"
     />
 
@@ -73,10 +74,12 @@
       <!-- ① 꽃잎 파티클 캔버스 (JS가 <div class="petal"> 생성) -->
       <div class="petals-canvas" id="petals-canvas" aria-hidden="true"></div>
 
-      <!-- ── 메인 사진
-           실제 사진으로 교체 시 src 값만 변경하세요.
-           예) src="src/img/your-photo.jpg"
-      ── -->
+      <!-- ── Zone ① : Tag — 먼저 등장 ── -->
+      <div class="hero__tag-zone">
+        <p class="hero__tag">We're Getting Married</p>
+      </div>
+
+      <!-- ── Zone ② : Photo — Tag 이후 등장 ── -->
       <div class="hero__photo">
         <img
           src="this.src='src/img/header.PNG"
@@ -85,103 +88,13 @@
         />
       </div>
 
-      <div class="hero__body reveal">
-        <p class="hero__tag">We're Getting Married</p>
-        <div class="hero__rule"></div>
+      <!-- ── Zone ③ : Names — 마지막 등장 ── -->
+      <div class="hero__body">
         <h1 class="hero__names">
           <span>김종학</span>
           <em class="hero__amp">&amp;</em>
           <span>임소현</span>
         </h1>
-        <div class="hero__rule"></div>
-        <p class="hero__date">2026 · 10 · 04 &nbsp;<em>Sun.</em>&nbsp;14:30</p>
-        <p class="hero__venue">더채플앳논현 6F 라포레홀</p>
-        <!-- ② 2026년 10월 달력 -->
-        <div class="hero__cal">
-          <p class="hero__cal-label">October · 2026</p>
-          <table
-            class="hero__cal-table"
-            role="presentation"
-            aria-label="2026년 10월 달력"
-          >
-            <thead>
-              <tr>
-                <th>S</th>
-                <th>M</th>
-                <th>T</th>
-                <th>W</th>
-                <th>T</th>
-                <th>F</th>
-                <th>S</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>1</td>
-                <td>2</td>
-                <td>3</td>
-              </tr>
-              <tr>
-                <td><span class="cal-wedding">4</span></td>
-                <td>5</td>
-                <td>6</td>
-                <td>7</td>
-                <td>8</td>
-                <td>9</td>
-                <td>10</td>
-              </tr>
-              <tr>
-                <td>11</td>
-                <td>12</td>
-                <td>13</td>
-                <td>14</td>
-                <td>15</td>
-                <td>16</td>
-                <td>17</td>
-              </tr>
-              <tr>
-                <td>18</td>
-                <td>19</td>
-                <td>20</td>
-                <td>21</td>
-                <td>22</td>
-                <td>23</td>
-                <td>24</td>
-              </tr>
-              <tr>
-                <td>25</td>
-                <td>26</td>
-                <td>27</td>
-                <td>28</td>
-                <td>29</td>
-                <td>30</td>
-                <td>31</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-      <!-- D-Day 카운트다운 -->
-      <div class="countdown" id="countdown" aria-live="polite">
-        <div class="countdown__col">
-          <span id="cnt-days">--</span><small>일</small>
-        </div>
-        <div class="countdown__sep" aria-hidden="true"></div>
-        <div class="countdown__col">
-          <span id="cnt-hours">--</span><small>시간</small>
-        </div>
-        <div class="countdown__sep" aria-hidden="true"></div>
-        <div class="countdown__col">
-          <span id="cnt-mins">--</span><small>분</small>
-        </div>
-        <div class="countdown__sep" aria-hidden="true"></div>
-        <div class="countdown__col">
-          <span id="cnt-secs">--</span><small>초</small>
-        </div>
       </div>
 
       <a href="#greeting" class="hero__scroll" aria-label="아래로 스크롤">
@@ -236,39 +149,6 @@
         </div>
       </div>
     </section>
-
-    <!-- ════════════════════════════════════════════
-         ③ SCROLL IMAGE — 풀블리드 패럴랙스 사진
-    ════════════════════════════════════════════ -->
-    <section id="scroll_Img" class="scroll-img-section">
-      <div class="scroll-img__wrap">
-        <img
-          src="src/img/PYD02712.jpg"
-          alt="웨딩 사진"
-          class="scroll-img__photo"
-          id="scroll-img-photo"
-          loading="lazy"
-        />
-      </div>
-      <!-- 상단/하단 vignette overlay -->
-      <div class="scroll-img__vignette" aria-hidden="true"></div>
-    </section>
-
-    <!-- ════════════════════════════════════════════
-         ④ BIG DATE — 날짜 포인트
-    ════════════════════════════════════════════ -->
-    <section id="big_Date" class="section section--deep big-date-section">
-      <div class="container">
-        <div class="big-date reveal">
-          <span class="big-date__part">Oct. 4.</span>
-          <span class="big-date__part">2026</span>
-          <span class="big-date__sub"
-            >The Wedding Day &nbsp;·&nbsp; 더채플앳논현</span
-          >
-        </div>
-      </div>
-    </section>
-
     <!-- ════════════════════════════════════════════
          ⑤ GALLERY / 갤러리
     ════════════════════════════════════════════ -->
@@ -348,6 +228,120 @@
       </button>
       <p class="gallery-modal__counter" id="gallery-modal-counter"></p>
     </div>
+
+    <!-- ════════════════════════════════════════════
+         ④ BIG DATE — 날짜 포인트
+    ════════════════════════════════════════════ -->
+    <section id="big_Date" class="section section--deep big-date-section">
+      <div class="container">
+        <div class="big-date reveal">
+          <span class="big-date__part">Oct. 4.</span>
+          <span class="big-date__part">2026</span>
+          <span class="big-date__sub"
+            >The Wedding Day &nbsp;·&nbsp; 더채플앳논현</span
+          >
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════
+         ④-B DATE INFO — 날짜·장소·캘린더·카운트다운
+         (hero 섹션에서 이동)
+    ════════════════════════════════════════════ -->
+    <section id="date-info" class="date-info-section">
+      <div class="container reveal">
+        <p class="hero__date">2026 · 10 · 04 &nbsp;<em>Sun.</em>&nbsp;14:30</p>
+        <p class="hero__venue">더채플앳논현 6F 라포레홀</p>
+
+        <!-- 2026년 10월 달력 -->
+        <div class="hero__cal">
+          <p class="hero__cal-label">October · 2026</p>
+          <table
+            class="hero__cal-table"
+            role="presentation"
+            aria-label="2026년 10월 달력"
+          >
+            <thead>
+              <tr>
+                <th>S</th>
+                <th>M</th>
+                <th>T</th>
+                <th>W</th>
+                <th>T</th>
+                <th>F</th>
+                <th>S</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>1</td>
+                <td>2</td>
+                <td>3</td>
+              </tr>
+              <tr>
+                <td><span class="cal-wedding">4</span></td>
+                <td>5</td>
+                <td>6</td>
+                <td>7</td>
+                <td>8</td>
+                <td>9</td>
+                <td>10</td>
+              </tr>
+              <tr>
+                <td>11</td>
+                <td>12</td>
+                <td>13</td>
+                <td>14</td>
+                <td>15</td>
+                <td>16</td>
+                <td>17</td>
+              </tr>
+              <tr>
+                <td>18</td>
+                <td>19</td>
+                <td>20</td>
+                <td>21</td>
+                <td>22</td>
+                <td>23</td>
+                <td>24</td>
+              </tr>
+              <tr>
+                <td>25</td>
+                <td>26</td>
+                <td>27</td>
+                <td>28</td>
+                <td>29</td>
+                <td>30</td>
+                <td>31</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- D-Day 카운트다운 -->
+        <div class="countdown" id="countdown" aria-live="polite">
+          <div class="countdown__col">
+            <span id="cnt-days">--</span><small>일</small>
+          </div>
+          <div class="countdown__sep" aria-hidden="true"></div>
+          <div class="countdown__col">
+            <span id="cnt-hours">--</span><small>시간</small>
+          </div>
+          <div class="countdown__sep" aria-hidden="true"></div>
+          <div class="countdown__col">
+            <span id="cnt-mins">--</span><small>분</small>
+          </div>
+          <div class="countdown__sep" aria-hidden="true"></div>
+          <div class="countdown__col">
+            <span id="cnt-secs">--</span><small>초</small>
+          </div>
+        </div>
+      </div>
+    </section>
 
     <!-- ════════════════════════════════════════════
          ④ LOCATION / 오시는 길
@@ -433,24 +427,47 @@
         </header>
 
         <p class="bus__intro">
-          멀리서 오시는 분들을 위해 전세버스를 운행합니다.
+          거제에서 출발하는 전세버스를 운행합니다.<br />
+          아래 탑승 장소 중 편하신 곳을 이용해 주세요.
         </p>
 
-        <div class="bus__cards">
-          <div class="bus__card">
-            <div class="bus__card-head">
-              <span class="bus__badge">출발 A</span>
-              <strong>인천 부평역 출발</strong>
-            </div>
-            <ul class="bus__list">
-              <li><span>탑승 장소</span>인천 부평역 3번 출구 앞</li>
-              <li><span>출발 시간</span>오전 11시 00분</li>
-              <li><span>도착 예정</span>오후 1시 00분</li>
-            </ul>
-            <p class="bus__return">
-              <strong>귀가</strong> 식사 후 오후 4시 30분 출발
-            </p>
+        <div class="bus__card">
+          <!-- 헤더: 출발지 → 도착지 -->
+          <div class="bus__card-head">
+            <strong>거제 출발</strong>
+            <span class="bus__dest">
+              <i data-lucide="arrow-right"></i>더채플앳논현
+            </span>
           </div>
+
+          <!-- 탑승 정류장 3곳 (타임라인) -->
+          <ul class="bus__stops">
+            <li class="bus__stop">
+              <div class="bus__stop-marker">01</div>
+              <div class="bus__stop-body">
+                <strong>탑승 장소 ①</strong>
+                <span>오전 00시 00분 출발</span>
+              </div>
+            </li>
+            <li class="bus__stop">
+              <div class="bus__stop-marker">02</div>
+              <div class="bus__stop-body">
+                <strong>탑승 장소 ②</strong>
+                <span>오전 00시 00분 출발</span>
+              </div>
+            </li>
+            <li class="bus__stop">
+              <div class="bus__stop-marker">03</div>
+              <div class="bus__stop-body">
+                <strong>탑승 장소 ③</strong>
+                <span>오전 00시 00분 출발</span>
+              </div>
+            </li>
+          </ul>
+
+          <p class="bus__return">
+            <strong>귀가</strong> 식사 후 오후 4시 30분 출발
+          </p>
         </div>
 
         <ul class="bus__notes">
@@ -460,7 +477,22 @@
         </ul>
       </div>
     </section>
-
+    <!-- ════════════════════════════════════════════
+         ③ SCROLL IMAGE — 풀블리드 패럴랙스 사진
+    ════════════════════════════════════════════ -->
+    <section id="scroll_Img" class="scroll-img-section">
+      <div class="scroll-img__wrap">
+        <img
+          src="src/img/PYD02712.jpg"
+          alt="웨딩 사진"
+          class="scroll-img__photo"
+          id="scroll-img-photo"
+          loading="lazy"
+        />
+      </div>
+      <!-- 상단/하단 vignette overlay -->
+      <div class="scroll-img__vignette" aria-hidden="true"></div>
+    </section>
     <!-- ════════════════════════════════════════════
          ⑥ ACCOUNT / 마음 전하실 곳
     ════════════════════════════════════════════ -->
@@ -657,6 +689,15 @@
             <label for="gb-message">축하 메시지</label>
             <span class="field__count" id="gb-count">0 / 200</span>
           </div>
+          <!-- 허니팟: 봇 방지 숨김 필드 — 사람은 이 입력란을 보지 못함 -->
+          <input
+            type="text"
+            name="website"
+            class="honeypot"
+            tabindex="-1"
+            autocomplete="off"
+            aria-hidden="true"
+          />
           <div class="gb-form__actions">
             <button type="submit" class="btn btn--dark">남기기</button>
           </div>
@@ -705,13 +746,7 @@
           <h2 id="rsvp-modal-title">참석 의사 표시</h2>
         </div>
 
-        <form
-          id="rsvp-m-form"
-          class="rsvp-form"
-          action="https://formspree.io/f/YOUR_FORM_ID"
-          method="POST"
-          novalidate
-        >
+        <form id="rsvp-m-form" class="rsvp-form" novalidate>
           <div class="field">
             <input
               type="text"
@@ -769,6 +804,15 @@
             <label for="rsvp-m-guests">동반 인원</label>
           </div>
 
+          <!-- 허니팟: 봇 방지 숨김 필드 -->
+          <input
+            type="text"
+            name="website"
+            class="honeypot"
+            tabindex="-1"
+            autocomplete="off"
+            aria-hidden="true"
+          />
           <button
             type="submit"
             class="btn btn--dark btn--full"
