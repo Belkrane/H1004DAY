@@ -156,16 +156,22 @@ function doGet(e) {
       if (sheet && sheet.getLastRow() > 1) {
         var data = sheet.getRange(2, 1, sheet.getLastRow() - 1, 3).getValues();
         for (var i = 0; i < data.length; i++) {
-          var row = data[i];
+          var row     = data[i];
           var rowName = String(row[1] || '').trim();
           var rowMsg  = String(row[2] || '').trim();
-          if (rowName && rowMsg) {
-            entries.push({
-              date: String(row[0]),   // 'yyyy-MM-dd HH:mm:ss'
-              name: rowName,
-              msg:  rowMsg
-            });
+          if (!rowName || !rowMsg) continue;
+
+          /* 날짜 셀: Sheets가 자동으로 Date 객체로 변환했을 수 있음.
+             항상 KST 'yyyy-MM-dd HH:mm:ss' 문자열로 정규화해서 반환. */
+          var dateVal = row[0];
+          var dateStr;
+          if (dateVal instanceof Date) {
+            dateStr = Utilities.formatDate(dateVal, 'Asia/Seoul', 'yyyy-MM-dd HH:mm:ss');
+          } else {
+            dateStr = String(dateVal || '');
           }
+
+          entries.push({ date: dateStr, name: rowName, msg: rowMsg });
         }
       }
 

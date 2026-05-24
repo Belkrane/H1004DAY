@@ -50,7 +50,21 @@ var CONFIG = {
   /* ↓ Google Apps Script 웹앱 배포 후 URL을 아래에 붙여넣기        */
   /* 예) 'https://script.google.com/macros/s/AKfycb.../exec'        */
   sheetsUrl:
-    "https://script.google.com/macros/s/AKfycbzUQiLYv859wzomiqphyyIIGWhkCFzhBzigNK1lihoMgVm-j7E2j53tr3FE73fxZ5Tubw/exec",
+    "https://script.google.com/macros/s/AKfycbzffQUFhIiTFswNnLU-eaTrdzEyW_m4zA-PZVSr5P7411DMrJVLKaaNZkVFK7d5Yj-LQA/exec",
+
+  /* ── 갤러리 이미지 목록 ──────────────────────────────────
+     src/gallery 에 이미지 추가 시 이 배열에만 추가하면 됩니다.
+     wide: true → 3열 그리드에서 2칸 너비(가로형 사진에 적합)  */
+  galleryImages: [
+    { src: "src/gallery/IMG_8467.JPG", alt: "커플 사진 1" },
+    { src: "src/gallery/IMG_8471.jpg", alt: "커플 사진 2" },
+    { src: "src/gallery/IMG_8474.jpg", alt: "커플 사진 3" },
+    { src: "src/gallery/IMG_8477.jpg", alt: "커플 사진 4" },
+    { src: "src/gallery/IMG_8483.JPG", alt: "커플 사진 5" },
+    { src: "src/gallery/IMG_8485.jpg", alt: "커플 사진 6" },
+    { src: "src/gallery/IMG_8489 2.JPG", alt: "커플 사진 7" },
+    { src: "src/gallery/IMG_8503.jpg", alt: "커플 사진 8", wide: true },
+  ],
 };
 
 /* ── UTILS ───────────────────────────────────────────────────*/
@@ -322,62 +336,105 @@ function initIcons() {
   }
 })();
 
-/* ── GALLERY MODAL ───────────────────────────────────────────*/
+/* ── GALLERY MODAL ───────────────────────────────────────────
+   CONFIG.galleryImages 배열로 그리드를 동적 생성합니다.
+   이미지 추가 시 CONFIG.galleryImages 에만 항목을 추가하세요.
+   총 개수 % 3 자동 처리:
+     나머지 2 → 마지막 이미지 wide(2칸)
+     나머지 1 → 마지막 이미지 fullrow(3칸 전체)
+   ─────────────────────────────────────────────────────────── */
 (function initGallery() {
-  var items = $$(".gallery__item");
   var modal = $("#gallery-modal");
-  var img = $("#gallery-modal-img");
+  if (!modal) return;
+
+  var grid = $(".gallery__grid");
+  var modalImg = $("#gallery-modal-img");
   var counter = $("#gallery-modal-counter");
   var btnPrev = $(".gallery-modal__prev", modal);
   var btnNext = $(".gallery-modal__next", modal);
   var btnClose = $(".gallery-modal__close", modal);
   var backdrop = $(".gallery-modal__backdrop", modal);
-  if (!modal || !items.length) return;
 
-  /* Collect image sources from gallery items */
-  var srcs = items.map(function (item) {
-    var i = item.querySelector("img");
-    return i ? i.src : "";
-  });
+  var srcs = [];
   var current = 0;
 
+  /* ── 모달 표시 / 닫기 ──────────────────────────────── */
   function show(idx) {
+    if (!srcs.length) return;
     current = (idx + srcs.length) % srcs.length;
-    /* Re-trigger animation */
-    img.style.animation = "none";
-    img.offsetHeight; /* reflow */
-    img.style.animation = "";
-    img.src = srcs[current];
-    img.alt = "사진 " + (current + 1);
+    modalImg.style.animation = "none";
+    modalImg.offsetHeight; /* reflow */
+    modalImg.style.animation = "";
+    modalImg.src = srcs[current];
+    modalImg.alt = "사진 " + (current + 1);
     if (counter) counter.textContent = current + 1 + " / " + srcs.length;
   }
-
   function open(idx) {
     show(idx);
     modal.removeAttribute("hidden");
     document.body.style.overflow = "hidden";
-    btnClose && btnClose.focus();
+    if (btnClose) btnClose.focus();
   }
-
   function close() {
     modal.setAttribute("hidden", "");
     document.body.style.overflow = "";
-    items[current] && items[current].focus();
+    var focused = $$(".gallery__item")[current];
+    if (focused) focused.focus();
   }
 
-  /* Gallery item click */
-  items.forEach(function (item) {
-    item.addEventListener("click", function () {
-      open(parseInt(item.dataset.idx || "0", 10));
+  /* ── 그리드 빌드: CONFIG.galleryImages → DOM ─────────── */
+  if (grid && CONFIG.galleryImages && CONFIG.galleryImages.length) {
+    var imgs = CONFIG.galleryImages.map(function (im) {
+      return Object.assign({}, im);
     });
-    item.addEventListener("keydown", function (e) {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        item.click();
-      }
-    });
-  });
 
+    /* 마지막 행 빈칸 자동 보정 */
+    var rem = imgs.length % 3;
+    if (rem === 2) imgs[imgs.length - 1].wide = true; /* span 2 */
+    if (rem === 1) imgs[imgs.length - 1].fullrow = true; /* span 3 */
+
+    grid.innerHTML = "";
+    imgs.forEach(function (imgCfg, idx) {
+      var cls = "gallery__item";
+      if (imgCfg.fullrow) cls += " gallery__item--fullrow";
+      else if (imgCfg.wide) cls += " gallery__item--wide";
+
+      var btn = document.createElement("button");
+      btn.className = cls;
+      btn.setAttribute("data-idx", String(idx));
+      btn.setAttribute("aria-label", "사진 " + (idx + 1) + " 크게 보기");
+
+      var imgEl = document.createElement("img");
+      imgEl.src = imgCfg.src;
+      imgEl.alt = imgCfg.alt || "커플 사진 " + (idx + 1);
+      imgEl.loading = "lazy";
+      btn.appendChild(imgEl);
+      grid.appendChild(btn);
+
+      btn.addEventListener(
+        "click",
+        (function (i) {
+          return function () {
+            open(i);
+          };
+        })(idx),
+      );
+      btn.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          btn.click();
+        }
+      });
+    });
+
+    srcs = imgs.map(function (c) {
+      return c.src;
+    });
+  }
+
+  if (!srcs.length) return;
+
+  /* ── 모달 버튼 / 키보드 / 스와이프 이벤트 ───────────── */
   if (btnPrev)
     btnPrev.addEventListener("click", function () {
       show(current - 1);
@@ -388,16 +445,12 @@ function initIcons() {
     });
   if (btnClose) btnClose.addEventListener("click", close);
   if (backdrop) backdrop.addEventListener("click", close);
-
-  /* Keyboard */
   document.addEventListener("keydown", function (e) {
     if (modal.hasAttribute("hidden")) return;
     if (e.key === "Escape") close();
     if (e.key === "ArrowLeft") show(current - 1);
     if (e.key === "ArrowRight") show(current + 1);
   });
-
-  /* Touch swipe */
   var touchStartX = 0;
   modal.addEventListener(
     "touchstart",
@@ -410,9 +463,7 @@ function initIcons() {
     "touchend",
     function (e) {
       var dx = e.changedTouches[0].clientX - touchStartX;
-      if (Math.abs(dx) > 48) {
-        dx < 0 ? show(current + 1) : show(current - 1);
-      }
+      if (Math.abs(dx) > 48) dx < 0 ? show(current + 1) : show(current - 1);
     },
     { passive: true },
   );
@@ -530,11 +581,39 @@ function initIcons() {
     );
   }
 
-  /* Sheets 날짜 형식 변환: '2026-01-15 14:30:45' → '2026.01.15 14:30' */
+  /* Sheets 날짜 → '연.월.일 시:분' 변환
+     처리 대상 형식:
+       ① 'yyyy-MM-dd HH:mm:ss'          — GAS Utilities.formatDate 출력
+       ② 'yyyy-MM-ddTHH:mm:ssZ'         — JSON.stringify(Date) ISO UTC
+       ③ 'Sun May 24 2026 17:01:51 GMT+0900 (한국 표준시)' — GAS String(Date)
+     ① 은 정규식으로 직접 파싱(빠름).
+     ②③ 은 new Date() 로 파싱 → getTime() 기준 KST +9h 보정. */
   function formatSheetsDate(str) {
-    var m = String(str).match(/(\d{4})-(\d{2})-(\d{2})[\sT](\d{2}):(\d{2})/);
+    if (!str) return "";
+    var s = String(str);
+
+    /* ① 'yyyy-MM-dd HH:mm:ss' 또는 'yyyy-MM-ddTHH:mm:ss' */
+    var m = s.match(/(\d{4})-(\d{2})-(\d{2})[\sT](\d{2}):(\d{2})/);
     if (m) return m[1] + "." + m[2] + "." + m[3] + " " + m[4] + ":" + m[5];
-    return str;
+
+    /* ②③ 그 외 모든 형식 — new Date() 파싱 후 UTC+9 로 변환 */
+    var d = new Date(s);
+    if (!isNaN(d.getTime())) {
+      var kst = new Date(d.getTime() + 9 * 3600 * 1000);
+      return (
+        kst.getUTCFullYear() +
+        "." +
+        pad(kst.getUTCMonth() + 1) +
+        "." +
+        pad(kst.getUTCDate()) +
+        " " +
+        pad(kst.getUTCHours()) +
+        ":" +
+        pad(kst.getUTCMinutes())
+      );
+    }
+
+    return s; /* 파싱 불가 시 원본 반환 */
   }
 
   /* ── Google Sheets 방명록 JSONP 조회 ─────────────────────
