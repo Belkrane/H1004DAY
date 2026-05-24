@@ -54,7 +54,9 @@ var CONFIG = {
 
   /* ── 갤러리 이미지 목록 ──────────────────────────────────
      src/gallery 에 이미지 추가 시 이 배열에만 추가하면 됩니다.
-     wide: true → 3열 그리드에서 2칸 너비(가로형 사진에 적합)  */
+     마지막 행 레이아웃은 자동 보정됩니다:
+       개수 % 3 === 2 → 마지막 wide(2칸)
+       개수 % 3 === 1 → 마지막 fullrow(3칸 전체)            */
   galleryImages: [
     { src: "src/gallery/IMG_8467.JPG", alt: "커플 사진 1" },
     { src: "src/gallery/IMG_8471.jpg", alt: "커플 사진 2" },
@@ -63,7 +65,14 @@ var CONFIG = {
     { src: "src/gallery/IMG_8483.JPG", alt: "커플 사진 5" },
     { src: "src/gallery/IMG_8485.jpg", alt: "커플 사진 6" },
     { src: "src/gallery/IMG_8489 2.JPG", alt: "커플 사진 7" },
-    { src: "src/gallery/IMG_8503.jpg", alt: "커플 사진 8", wide: true },
+    { src: "src/gallery/IMG_8496.JPG", alt: "커플 사진 8" },
+    { src: "src/gallery/IMG_8497.jpg", alt: "커플 사진 9" },
+    { src: "src/gallery/IMG_8503.jpg", alt: "커플 사진 10" },
+    { src: "src/gallery/IMG_8508.jpg", alt: "커플 사진 11" },
+    { src: "src/gallery/IMG_8509.jpg", alt: "커플 사진 12" },
+    { src: "src/gallery/IMG_8510.jpg", alt: "커플 사진 13" },
+    { src: "src/gallery/IMG_8512.jpg", alt: "커플 사진 14" },
+    { src: "src/gallery/IMG_8513.JPG", alt: "커플 사진 15" },
   ],
 };
 
