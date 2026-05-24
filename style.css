@@ -940,9 +940,13 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   gap: 7px;
 }
 .transport__lines .transport__info { line-height: 1.65; }
-/* 호선별 강조 색상 */
-.subway-9 { color: #BEA140; font-weight: 500; }  /* 9호선 골드 */
-.subway-2 { color: #00A84D; font-weight: 500; }  /* 2호선 초록 */
+/* 호선별 강조 색상 — 명시도 0,2,0 으로 transport__info 상속 차단 */
+.transport__info .subway-9,
+.subway-9 { color: #BEA140 !important; font-weight: 500; }  /* 9호선 골드  */
+.transport__info .subway-2,
+.subway-2 { color: #00A84D !important; font-weight: 500; }  /* 2호선 초록  */
+/* 버스 종류 레이블 강조 */
+.bus-type { color: var(--wood-dk) !important; font-weight: 700; }
 
 /* ── 10. Bus / Shuttle ────────────────────────────────────── */
 .bus__intro {

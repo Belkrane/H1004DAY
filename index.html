@@ -64,7 +64,7 @@
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
 
-    <link rel="stylesheet" href="style.css?v=20260524" />
+    <link rel="stylesheet" href="style.css?v=20260526" />
   </head>
   <body>
     <!-- ════════════════════════════════════════════
@@ -157,12 +157,8 @@
           <h2>갤러리</h2>
         </header>
 
-        <!--
-          갤러리 레이아웃 — 3열 그리드, 5개마다 와이드(2열) 피처드 사진
-          패턴: [W(2)][1] / [1][1][1] / [1][W(2)] / [1][1][1] / …  (2행 × 5사진)
-        -->
+        <!-- 갤러리 — 3열 × 2행 (src/gallery 전체) -->
         <div class="gallery__grid">
-          <!-- 01~05 -->
           <button
             class="gallery__item"
             data-idx="0"
@@ -188,11 +184,44 @@
           <button
             class="gallery__item"
             data-idx="2"
-            aria-label="사진 30 크게 보기"
+            aria-label="사진 3 크게 보기"
           >
             <img
               src="src/gallery/IMG_8474.jpg"
               alt="커플 사진 3"
+              loading="lazy"
+            />
+          </button>
+          <button
+            class="gallery__item"
+            data-idx="3"
+            aria-label="사진 4 크게 보기"
+          >
+            <img
+              src="src/gallery/IMG_8477.jpg"
+              alt="커플 사진 4"
+              loading="lazy"
+            />
+          </button>
+          <button
+            class="gallery__item"
+            data-idx="4"
+            aria-label="사진 5 크게 보기"
+          >
+            <img
+              src="src/gallery/IMG_8483.JPG"
+              alt="커플 사진 5"
+              loading="lazy"
+            />
+          </button>
+          <button
+            class="gallery__item"
+            data-idx="5"
+            aria-label="사진 6 크게 보기"
+          >
+            <img
+              src="src/gallery/IMG_8485.jpg"
+              alt="커플 사진 6"
               loading="lazy"
             />
           </button>
@@ -403,20 +432,19 @@
             >
             <div class="transport__lines">
               <span class="transport__info">
-                <span class="subway-9">언주역(9호선)</span> 7번 출구 → 정면 150m
-                도보 후 우측 건물
+                <span class="subway-9">언주역(9호선)</span> 7번 출구 정면 도보
+                150m
               </span>
               <span class="transport__info">
-                <span class="subway-2">역삼역(2호선)</span> 6번 출구 → 좌측 450m
-                도보 후 좌측 건물
+                <span class="subway-2">역삼역(2호선)</span> 6번 출구 좌측 도보
+                450m
               </span>
             </div>
           </li>
           <li class="transport__row">
             <span class="transport__label"><i data-lucide="bus"></i>버스</span>
             <span class="transport__info"
-              >간선 147·464 / 지선 4211 / 광역 3600·9600 — 차병원(역삼방면) 하차
-              후 역삼역 방면 50m 우측</span
+              ><span class="bus-type">간선</span> 147·464 / <span class="bus-type">지선</span> 4211 / <span class="bus-type">광역</span> 3600·9600 — 차병원(역삼방면) 하차</span
             >
           </li>
           <li class="transport__row">
@@ -424,8 +452,7 @@
               ><i data-lucide="car"></i>자가용</span
             >
             <span class="transport__info"
-              >동호대교 남단 → 압구정역 → 학동역 → 차병원 사거리 → 역삼역 방면
-              200m 직진 후 우측 건물</span
+              >주차장 이용 시 발렛 서비스 및 셔틀버스가 운행됩니다.</span
             >
           </li>
         </ul>
