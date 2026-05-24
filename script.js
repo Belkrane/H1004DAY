@@ -268,42 +268,59 @@ function initIcons() {
    ② scroll 이벤트 → translateY ±24 px 패럴랙스
    ─────────────────────────────────────────────────────────── */
 (function initScrollImg() {
-  var section = document.getElementById("scroll_Img");
-  var photo = document.getElementById("scroll-img-photo");
-  if (!section || !photo) return;
+  /* .scroll-img-section 이 여러 개여도 모두 처리 */
+  var sections = $$(".scroll-img-section");
+  if (!sections.length) return;
 
-  /* ① 뷰포트 진입 시 이미지 페이드+스케일 인 */
-  if ("IntersectionObserver" in window) {
-    var revealObs = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (e) {
-          if (e.isIntersecting) {
-            photo.classList.add("is-visible");
-            revealObs.unobserve(section);
-          }
-        });
-      },
-      { threshold: 0.06 },
-    );
-    revealObs.observe(section);
-  } else {
-    photo.classList.add("is-visible");
-  }
+  sections.forEach(function (section) {
+    var photo   = section.querySelector(".scroll-img__photo");
+    var caption = section.querySelector(".scroll-img__caption-text");
+    if (!photo) return;
 
-  /* ② 스크롤 패럴랙스 */
-  function tick() {
-    var rect = section.getBoundingClientRect();
-    var wh = window.innerHeight;
-    if (rect.bottom < 0 || rect.top > wh) return;
-    var progress = (wh - rect.top) / (wh + rect.height); /* 0→1 */
-    var shift = (progress - 0.5) * 48; /* ±24 px */
-    /* .is-visible 이후에만 패럴랙스 transform 적용 (CSS 애니메이션과 충돌 방지) */
-    if (photo.classList.contains("is-visible")) {
-      photo.style.transform = "translateY(" + shift.toFixed(1) + "px) scale(1)";
+    /* ① 뷰포트 진입: 이미지 페이드+스케일, 캡션 페이드+상승 */
+    if ("IntersectionObserver" in window) {
+      var revealObs = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (e) {
+            if (e.isIntersecting) {
+              photo.classList.add("is-visible");
+              if (caption) caption.classList.add("is-visible");
+              revealObs.unobserve(section);
+            }
+          });
+        },
+        { threshold: 0.06 },
+      );
+      revealObs.observe(section);
+    } else {
+      photo.classList.add("is-visible");
+      if (caption) caption.classList.add("is-visible");
     }
-  }
-  window.addEventListener("scroll", tick, { passive: true });
-  tick();
+
+    /* ② 스크롤 패럴랙스 — 이미지 ±24 px 수직 이동
+       캡션은 반대 방향으로 절반 속도(±10 px)로 이동해
+       레이어 깊이감을 줍니다.                          */
+    function tick() {
+      var rect = section.getBoundingClientRect();
+      var wh   = window.innerHeight;
+      if (rect.bottom < 0 || rect.top > wh) return;
+      var progress = (wh - rect.top) / (wh + rect.height); /* 0 → 1 */
+      var shift    = (progress - 0.5) * 48;                /* ±24 px */
+
+      if (photo.classList.contains("is-visible")) {
+        photo.style.transform =
+          "translateY(" + shift.toFixed(1) + "px) scale(1)";
+      }
+      /* 캡션: 반대 방향 절반 속도 → 패럴랙스 레이어 깊이감 */
+      if (caption && caption.classList.contains("is-visible")) {
+        var captionShift = (progress - 0.5) * -20; /* ±10 px, 반대 */
+        caption.style.transform =
+          "translateY(" + captionShift.toFixed(1) + "px)";
+      }
+    }
+    window.addEventListener("scroll", tick, { passive: true });
+    tick();
+  });
 })();
 
 /* ── PETALS ──────────────────────────────────────────────────

@@ -650,11 +650,36 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   background: linear-gradient(
     to bottom,
     rgba(28,26,23,.40) 0%,
-    transparent 20%,
-    transparent 80%,
-    rgba(28,26,23,.40) 100%
+    transparent 22%,
+    transparent 78%,
+    rgba(28,26,23,.50) 100%
   );
   pointer-events: none;
+}
+/* 텍스트 캡션 오버레이 (두 번째 스크롤 이미지 섹션) */
+.scroll-img__caption {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 2;
+}
+.scroll-img__caption-text {
+  font-family: var(--handwriting);
+  font-size: clamp(1.4rem, 5vw, 2.4rem);
+  font-weight: normal;
+  letter-spacing: 0.18em;
+  color: rgba(255, 255, 255, 0.82);
+  text-shadow: 0 2px 18px rgba(0,0,0,0.35);
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 1.4s 0.3s ease, transform 1.4s 0.3s ease;
+}
+.scroll-img__caption-text.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ── 7-B. Big Date Section ────────────────────────────────── */
