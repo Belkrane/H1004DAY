@@ -1070,23 +1070,25 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   list-style: none;
   margin: 4px 0 20px;
   padding: 0;
-  position: relative;
 }
-/* 정류장을 잇는 세로 연결선 */
-.bus__stops::before {
-  content: '';
-  position: absolute;
-  left: 14px;                /* 마커(30px) 중심 */
-  top: 30px;
-  bottom: 30px;
-  width: 1px;
-  background: var(--line);
-}
+/* 정류장 간 연결선: 마지막 항목에는 선 없음 */
 .bus__stop {
   display: flex;
   align-items: flex-start;
   gap: 16px;
+  position: relative;
   padding: 10px 0;
+}
+/* 마커 중심(top:24px) → 다음 마커 중심(bottom:-24px) 구간만 선 그리기 */
+.bus__stop:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 14px;       /* 마커 X 중심 (28px / 2) */
+  top: 24px;        /* 마커 Y 중심 (10px 패딩 + 14px 반지름) */
+  bottom: -24px;    /* 다음 li 마커 Y 중심까지 연장 */
+  width: 1px;
+  background: var(--line);
+  z-index: 0;
 }
 /* 원형 번호 마커 */
 .bus__stop-marker {
