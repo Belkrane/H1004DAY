@@ -3,15 +3,26 @@
    Mobile-first · Vanilla CSS · No frameworks
    ============================================================ */
 
+/* ── 교보 손글씨체 2025 (로컬 TTF) ──────────────────────────
+   파일: src/font/KyoboHandwriting2025lyb.ttf
+   ─────────────────────────────────────────────────────────── */
+@font-face {
+  font-family: 'KyoboHandwriting';
+  src: url('src/font/KyoboHandwriting2025lyb.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ── 0. Design Tokens ─────────────────────────────────────── */
 :root {
   /* ── 배경 팔레트 ─────────────────────────────────────── */
-  --bg-off:    #FAFAFA;   /* 클린 오프화이트 (Hero, 기본)   */
-  --bg-white:  #FFFFFF;   /* 순백 (인사말, 지도, RSVP)      */
+  --bg-off:    #FAFAFA;   /* 클린 오프화이트 (Hero, 지도)    */
+  --bg-white:  #FFFFFF;   /* 순백 (인사말, 날짜 정보)        */
   --bg-warm:   #F7F2EB;   /* 따뜻한 크림 — 갤러리           */
-  --bg-stone:  #F0EBE3;   /* 웜 우드 스톤 — 버스             */
-  --bg-blush:  #F5EEE8;   /* 소프트 아이보리 — 마음 전하실 곳*/
-  --bg-cool:   #F2EDE9;   /* 웜 페이퍼 — 방명록              */
+  --bg-stone:  #EDE6DC;   /* 웜 우드 스톤 — 버스 (진하게)    */
+  --bg-blush:  #F5EAE1;   /* 로즈 아이보리 — 마음 전하실 곳 */
+  --bg-cool:   #EDEAE6;   /* 쿨 스톤 — 방명록 (쿨 그레이)   */
   --bg-deep:   #7A5438;   /* 미디엄 우드 — 날짜 섹션          */
 
   /* ── 우드 포인트 컬러 ────────────────────────────────── */
@@ -28,12 +39,15 @@
   --line-dk:   #CDB9AC;   /* 진한 디바이더                   */
 
   /* ── 폰트: White & Wood ─────────────────────────────
-     Nanum Myeongjo : 한글 세리프 포인트체 (이름·날짜·제목)
+     Nanum Myeongjo : 한글 세리프 포인트체 (날짜·달력·장식)
+     Noto Serif KR  : 현대적 부드러운 세리프 (이름 등 메인 제목)
      Noto Sans KR   : 한글 본문 산세리프 (가독성 우선)
   ────────────────────────────────────────────────── */
-  --serif:  'Nanum Myeongjo', Georgia, serif;
-  --sans:   'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
-  --script: 'Great Vibes', cursive;   /* 웨딩 캘리그래피 필기체 */
+  --serif:       'Nanum Myeongjo', Georgia, serif;
+  --soft-serif:  'Noto Serif KR', 'Nanum Myeongjo', Georgia, serif;
+  --handwriting: 'KyoboHandwriting', 'Nanum Myeongjo', cursive;  /* 교보 손글씨체 */
+  --sans:        'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+  --script:      'Great Vibes', cursive;   /* 웨딩 캘리그래피 필기체 */
 
   --px:  28px;       /* 페이지 수평 패딩    */
   --max: 480px;      /* 콘텐츠 최대 폭      */
@@ -118,10 +132,14 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   opacity: 1;
   transform: translateY(0);
 }
-/* Stagger children inside a revealed container */
+/* Stagger children inside a revealed container — 처음 6장은 순차, 이후는 일괄 */
 .io-ready .reveal.in-view .gallery__item:nth-child(1) { transition-delay: 0s;    }
-.io-ready .reveal.in-view .gallery__item:nth-child(2) { transition-delay: .1s;   }
-.io-ready .reveal.in-view .gallery__item:nth-child(3) { transition-delay: .2s;   }
+.io-ready .reveal.in-view .gallery__item:nth-child(2) { transition-delay: .07s;  }
+.io-ready .reveal.in-view .gallery__item:nth-child(3) { transition-delay: .14s;  }
+.io-ready .reveal.in-view .gallery__item:nth-child(4) { transition-delay: .21s;  }
+.io-ready .reveal.in-view .gallery__item:nth-child(5) { transition-delay: .28s;  }
+.io-ready .reveal.in-view .gallery__item:nth-child(6) { transition-delay: .35s;  }
+.io-ready .reveal.in-view .gallery__item:nth-child(n+7) { transition-delay: .42s; }
 
 /* ── 5. Buttons ───────────────────────────────────────────── */
 .btn {
@@ -230,8 +248,8 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   padding: 44px var(--px) 40px;
   position: relative;                     /* ::after 그라데이션 기준점    */
   z-index: 2;                             /* photo 위에 그라데이션 노출   */
-  /* Zone 자체는 즉시 나타남 */
-  animation: heroTagZoneIn 0.7s ease both;
+  /* Zone 자체: 위에서 내려오며 fade-in */
+  animation: heroTagZoneIn 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* 하단 그라데이션 브릿지: 흰 zone → photo 자연스럽게 페이드 */
@@ -305,8 +323,9 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   z-index: 1;                             /* tag-zone(z:2) 의 그라데이션 아래 */
   width: 100%;
   flex-shrink: 0;
-  /* ② tag 이후 slide-up 등장 */
-  animation: heroPhotoIn 1.1s cubic-bezier(0.22, 1, 0.36, 1) 0.65s both;
+  overflow: hidden;                       /* hover scale 이 밖으로 넘치지 않게 */
+  /* ② tag 이후 slide-up + scale 등장 */
+  animation: heroPhotoIn 1.2s cubic-bezier(0.22, 1, 0.36, 1) 0.65s both;
 }
 .hero__photo img {
   width: 100%;
@@ -324,6 +343,12 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
     to bottom,
     black 0%, black 54%, transparent 100%
   );
+  /* hover 시 부드러운 줌 전환 */
+  transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* 사진 영역 hover: 은은한 줌 인터렉션 */
+.hero__photo:hover img {
+  transform: scale(1.04);
 }
 
 /* ── Zone ③: Names ─────────────────────────────────────────
@@ -344,45 +369,50 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
 }
 
 /* ── Hero 입장 Keyframes ─────────────────────────────────── */
+/* Zone ①: tag zone 이 위에서 살짝 내려오며 등장 */
 @keyframes heroTagZoneIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from { opacity: 0; transform: translateY(-14px); }
+  to   { opacity: 1; transform: translateY(0);     }
 }
+/* tag 텍스트: 아래서 올라오며 spring bounce */
 @keyframes heroTagTextIn {
-  from { opacity: 0; transform: translateY(14px) scale(0.95); }
+  from { opacity: 0; transform: translateY(16px) scale(0.94); }
   to   { opacity: 1; transform: translateY(0)    scale(1);    }
 }
+/* 장식 언더라인 그려지기 */
 @keyframes tagRuleIn {
   from { transform: scaleX(0); opacity: 0; }
   to   { transform: scaleX(1); opacity: 1; }
 }
+/* Zone ②: photo — 아래서 올라오며 동시에 살짝 줌 아웃 (zoom-in-up) */
 @keyframes heroPhotoIn {
-  from { opacity: 0; transform: translateY(36px); }
-  to   { opacity: 1; transform: translateY(0);    }
+  from { opacity: 0; transform: translateY(44px) scale(1.05); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
 }
+/* Zone ③: names — 아래서 올라오며 크기 복원 */
 @keyframes heroBodyIn {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0);    }
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
 }
 
-/* ── Hero: names — 단독 콘텐츠이므로 더 크게 ────────────── */
+/* ── Hero: names — 교보 손글씨체 ───────────────────────── */
 .hero__names {
-  font-family: var(--serif);
-  font-size: clamp(2.1rem, 7vw, 3.2rem); /* 기존 1.6~2.2rem → 확대 */
-  font-weight: 400;
-  letter-spacing: 0.08em;
+  font-family: var(--handwriting);
+  font-size: clamp(2.4rem, 8.5vw, 3.8rem); /* 손글씨체는 조금 더 크게 */
+  font-weight: normal;
+  letter-spacing: 0.06em;
   color: var(--text);
   display: flex;
   align-items: center;
-  gap: 14px;
-  line-height: 1.15;
+  gap: 12px;
+  line-height: 1.2;
 }
 .hero__amp {
-  font-family: var(--serif);
-  font-style: italic;
-  font-size: 1.2rem;
-  color: var(--muted);
-  font-weight: 400;
+  font-family: var(--handwriting);  /* 이름과 같은 손글씨체로 통일 */
+  font-style: normal;
+  font-size: 1.6rem;
+  color: var(--wood-lt);
+  font-weight: normal;
 }
 .hero__rule {
   width: 32px;
@@ -391,7 +421,7 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   margin: 16px auto;
 }
 
-/* ── 날짜·장소 공통 텍스트 (date-info 섹션에서도 재사용) ── */
+/* ── 날짜·장소 공통 텍스트 (hero body / date-info 섹션 재사용) ── */
 .hero__date {
   font-family: var(--serif);
   font-size: 0.88rem;
@@ -406,10 +436,12 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
   color: var(--muted);
   margin-top: 5px;
 }
+/* hero__body 안에서는 rule 이 이미 여백을 만들므로 중복 제거 */
+.hero__body .hero__date { margin-top: 0; }
 
 /* ── Date Info Section — big_date 아래 이동된 정보 블록 ──── */
 .date-info-section {
-  background: var(--bg-white);
+  background: var(--bg-off);         /* 옅은 오프화이트 — 인사말 흰 배경과 구분 */
   padding: 64px var(--px) 72px;
   text-align: center;
 }
@@ -1614,7 +1646,7 @@ legend   { font-size: 0.72rem; font-weight: 400; letter-spacing: 0.16em; color: 
 /* ── 19. Responsive ───────────────────────────────────────── */
 @media (min-width: 480px) {
   .hero__photo img { height: 56vw; max-height: 540px; }
-  .hero__names { font-size: 2.4rem; }
+  .hero__names { font-size: 2.8rem; font-weight: normal; }
   .bus__cards { flex-direction: row; }
   .bus__card { flex: 1; }
 }

@@ -57,7 +57,7 @@
       Great Vibes    — 고급 웨딩 캘리그래피 필기체 (hero tag)
     -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@300;400;500&family=Noto+Serif+KR:wght@300;400&display=swap"
       rel="stylesheet"
     />
 
@@ -82,21 +82,22 @@
       <!-- ── Zone ② : Photo — Tag 이후 등장 ── -->
       <div class="hero__photo">
         <img
-          src="this.src='src/img/header.PNG"
+          src="src/img/header.PNG"
           alt="커플 메인 사진"
-          onerror="this.src='src/img/header.PNG'"
         />
       </div>
 
-      <!-- ── Zone ③ : Names — 마지막 등장 ── -->
+      <!-- ── Zone ③ : Names + Date/Venue — 마지막 등장 ── -->
       <div class="hero__body">
         <h1 class="hero__names">
           <span>김종학</span>
           <em class="hero__amp">&amp;</em>
           <span>임소현</span>
         </h1>
+        <div class="hero__rule"></div>
+        <p class="hero__date">2026 · 10 · 04 &nbsp;<em>Sun.</em>&nbsp;14:30</p>
+        <p class="hero__venue">더채플앳논현 6F 라포레홀</p>
       </div>
-
       <a href="#greeting" class="hero__scroll" aria-label="아래로 스크롤">
         <i data-lucide="chevron-down"></i>
       </a>
@@ -159,47 +160,37 @@
           <h2>갤러리</h2>
         </header>
 
-        <!-- ── 사진 교체 방법
-             각 <img> 의 src 값을 실제 사진 경로로 바꾸세요.
-             예) src="src/img/PYD00044.jpg"
-        ── -->
         <div class="gallery__grid">
-          <button
-            class="gallery__item"
-            data-idx="0"
-            aria-label="사진 1 크게 보기"
-          >
-            <img
-              src="src/img/PYD00030.jpg"
-              alt="커플 사진 1"
-              loading="lazy"
-              onerror="this.src='src/img/PYD00030.jpg'"
-            />
-          </button>
-          <button
-            class="gallery__item"
-            data-idx="1"
-            aria-label="사진 2 크게 보기"
-          >
-            <img
-              src="src/img/PYD00044.jpg"
-              alt="커플 사진 2"
-              loading="lazy"
-              onerror="this.src='src/img/PYD00044.jpg'"
-            />
-          </button>
-          <button
-            class="gallery__item"
-            data-idx="2"
-            aria-label="사진 3 크게 보기"
-          >
-            <img
-              src="src/img/PYD00062.jpg"
-              alt="커플 사진 3"
-              loading="lazy"
-              onerror="this.src='src/img/PYD00062.jpg'"
-            />
-          </button>
+          <button class="gallery__item" data-idx="0"  aria-label="사진 1 크게 보기"><img src="src/gallery/PYD00041.jpg"  alt="커플 사진 1"  loading="lazy" /></button>
+          <button class="gallery__item" data-idx="1"  aria-label="사진 2 크게 보기"><img src="src/gallery/PYD00195.jpg"  alt="커플 사진 2"  loading="lazy" /></button>
+          <button class="gallery__item" data-idx="2"  aria-label="사진 3 크게 보기"><img src="src/gallery/PYD00282.jpg"  alt="커플 사진 3"  loading="lazy" /></button>
+          <button class="gallery__item" data-idx="3"  aria-label="사진 4 크게 보기"><img src="src/gallery/PYD00658.jpg"  alt="커플 사진 4"  loading="lazy" /></button>
+          <button class="gallery__item" data-idx="4"  aria-label="사진 5 크게 보기"><img src="src/gallery/PYD00702.jpg"  alt="커플 사진 5"  loading="lazy" /></button>
+          <button class="gallery__item" data-idx="5"  aria-label="사진 6 크게 보기"><img src="src/gallery/PYD00983.jpg"  alt="커플 사진 6"  loading="lazy" /></button>
+          <button class="gallery__item" data-idx="6"  aria-label="사진 7 크게 보기"><img src="src/gallery/PYD01227.jpg"  alt="커플 사진 7"  loading="lazy" /></button>
+          <button class="gallery__item" data-idx="7"  aria-label="사진 8 크게 보기"><img src="src/gallery/PYD01689.jpg"  alt="커플 사진 8"  loading="lazy" /></button>
+          <button class="gallery__item" data-idx="8"  aria-label="사진 9 크게 보기"><img src="src/gallery/PYD01769.jpg"  alt="커플 사진 9"  loading="lazy" /></button>
+          <button class="gallery__item" data-idx="9"  aria-label="사진 10 크게 보기"><img src="src/gallery/PYD01804.jpg" alt="커플 사진 10" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="10" aria-label="사진 11 크게 보기"><img src="src/gallery/PYD01849.jpg" alt="커플 사진 11" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="11" aria-label="사진 12 크게 보기"><img src="src/gallery/PYD01929.jpg" alt="커플 사진 12" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="12" aria-label="사진 13 크게 보기"><img src="src/gallery/PYD02032.jpg" alt="커플 사진 13" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="13" aria-label="사진 14 크게 보기"><img src="src/gallery/PYD02157.jpg" alt="커플 사진 14" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="14" aria-label="사진 15 크게 보기"><img src="src/gallery/PYD02244.jpg" alt="커플 사진 15" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="15" aria-label="사진 16 크게 보기"><img src="src/gallery/PYD02300.jpg" alt="커플 사진 16" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="16" aria-label="사진 17 크게 보기"><img src="src/gallery/PYD02496.jpg" alt="커플 사진 17" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="17" aria-label="사진 18 크게 보기"><img src="src/gallery/PYD02550.jpg" alt="커플 사진 18" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="18" aria-label="사진 19 크게 보기"><img src="src/gallery/PYD02841.jpg" alt="커플 사진 19" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="19" aria-label="사진 20 크게 보기"><img src="src/gallery/PYD03060.jpg" alt="커플 사진 20" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="20" aria-label="사진 21 크게 보기"><img src="src/gallery/PYD03100.jpg" alt="커플 사진 21" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="21" aria-label="사진 22 크게 보기"><img src="src/gallery/PYD03263.jpg" alt="커플 사진 22" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="22" aria-label="사진 23 크게 보기"><img src="src/gallery/PYD03463.jpg" alt="커플 사진 23" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="23" aria-label="사진 24 크게 보기"><img src="src/gallery/PYD03493.jpg" alt="커플 사진 24" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="24" aria-label="사진 25 크게 보기"><img src="src/gallery/PYD03661.jpg" alt="커플 사진 25" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="25" aria-label="사진 26 크게 보기"><img src="src/gallery/PYD03681.jpg" alt="커플 사진 26" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="26" aria-label="사진 27 크게 보기"><img src="src/gallery/PYD03694.jpg" alt="커플 사진 27" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="27" aria-label="사진 28 크게 보기"><img src="src/gallery/IMG_8467.JPG" alt="커플 사진 28" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="28" aria-label="사진 29 크게 보기"><img src="src/gallery/IMG_8471.jpg" alt="커플 사진 29" loading="lazy" /></button>
+          <button class="gallery__item" data-idx="29" aria-label="사진 30 크게 보기"><img src="src/gallery/IMG_8474.jpg" alt="커플 사진 30" loading="lazy" /></button>
         </div>
       </div>
     </section>
@@ -346,7 +337,7 @@
     <!-- ════════════════════════════════════════════
          ④ LOCATION / 오시는 길
     ════════════════════════════════════════════ -->
-    <section id="map" class="section section--white">
+    <section id="map" class="section section--off">
       <div class="container reveal">
         <header class="section-head">
           <span class="section-tag">Location</span>

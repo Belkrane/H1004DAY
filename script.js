@@ -4,6 +4,14 @@
    ============================================================ */
 "use strict";
 
+/* ── SCROLL TO TOP ON LOAD ────────────────────────────────────
+   브라우저의 스크롤 위치 복원을 막고 항상 최상단에서 시작합니다.
+   ─────────────────────────────────────────────────────────── */
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+window.scrollTo(0, 0);
+
 /* ── ZOOM PREVENTION ─────────────────────────────────────────
    viewport meta (user-scalable=no) is sufficient for most
    browsers, but iOS 10+ re-enables zoom — block it with JS.
