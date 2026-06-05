@@ -58,7 +58,7 @@ var CONFIG = {
        개수 % 3 === 2 → 마지막 wide(2칸)
        개수 % 3 === 1 → 마지막 fullrow(3칸 전체)            */
   galleryImages: [
-    { src: "src/gallery/1.jpg?v=20260606", alt: "커플 사진 1" },
+    { src: "src/gallery/1.jpg?v=20260607", alt: "커플 사진 1" },
     { src: "src/gallery/2.jpg?v=20260606", alt: "커플 사진 2" },
     { src: "src/gallery/3.jpg?v=20260606", alt: "커플 사진 3" },
     { src: "src/gallery/4.jpg?v=20260606", alt: "커플 사진 4" },
