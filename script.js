@@ -58,24 +58,24 @@ var CONFIG = {
        개수 % 3 === 2 → 마지막 wide(2칸)
        개수 % 3 === 1 → 마지막 fullrow(3칸 전체)            */
   galleryImages: [
-    { src: "src/gallery/1.JPG", alt: "커플 사진 1" },
+    { src: "src/gallery/1.jpg", alt: "커플 사진 1" },
     { src: "src/gallery/2.jpg", alt: "커플 사진 2" },
     { src: "src/gallery/3.jpg", alt: "커플 사진 3" },
     { src: "src/gallery/4.jpg", alt: "커플 사진 4" },
-    { src: "src/gallery/5.JPG", alt: "커플 사진 5" },
+    { src: "src/gallery/5.jpg", alt: "커플 사진 5" },
     { src: "src/gallery/6.jpg", alt: "커플 사진 6" },
-    { src: "src/gallery/7.JPG", alt: "커플 사진 7" },
-    { src: "src/gallery/8.JPG", alt: "커플 사진 8" },
+    { src: "src/gallery/7.jpg", alt: "커플 사진 7" },
+    { src: "src/gallery/8.jpg", alt: "커플 사진 8" },
     { src: "src/gallery/9.jpg", alt: "커플 사진 9" },
     { src: "src/gallery/10.jpg", alt: "커플 사진 10" },
     { src: "src/gallery/11.jpg", alt: "커플 사진 11" },
     { src: "src/gallery/12.jpg", alt: "커플 사진 12" },
     { src: "src/gallery/13.jpg", alt: "커플 사진 13" },
     { src: "src/gallery/14.jpg", alt: "커플 사진 14" },
-    { src: "src/gallery/15.JPG", alt: "커플 사진 15" },
-    { src: "src/gallery/16.JPG", alt: "커플 사진 16" },
-    { src: "src/gallery/17.JPG", alt: "커플 사진 17" },
-    { src: "src/gallery/18.JPG", alt: "커플 사진 18" },
+    { src: "src/gallery/15.jpg", alt: "커플 사진 15" },
+    { src: "src/gallery/16.jpg", alt: "커플 사진 16" },
+    { src: "src/gallery/17.jpg", alt: "커플 사진 17" },
+    { src: "src/gallery/18.jpg", alt: "커플 사진 18" },
   ],
 };
 
