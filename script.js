@@ -58,21 +58,24 @@ var CONFIG = {
        개수 % 3 === 2 → 마지막 wide(2칸)
        개수 % 3 === 1 → 마지막 fullrow(3칸 전체)            */
   galleryImages: [
-    { src: "src/gallery/IMG_8467.JPG", alt: "커플 사진 1" },
-    { src: "src/gallery/IMG_8471.jpg", alt: "커플 사진 2" },
-    { src: "src/gallery/IMG_8474.jpg", alt: "커플 사진 3" },
-    { src: "src/gallery/IMG_8477.jpg", alt: "커플 사진 4" },
-    { src: "src/gallery/IMG_8483.JPG", alt: "커플 사진 5" },
-    { src: "src/gallery/IMG_8485.jpg", alt: "커플 사진 6" },
-    { src: "src/gallery/IMG_8489 2.JPG", alt: "커플 사진 7" },
-    { src: "src/gallery/IMG_8496.JPG", alt: "커플 사진 8" },
-    { src: "src/gallery/IMG_8497.jpg", alt: "커플 사진 9" },
-    { src: "src/gallery/IMG_8503.jpg", alt: "커플 사진 10" },
-    { src: "src/gallery/IMG_8508.jpg", alt: "커플 사진 11" },
-    { src: "src/gallery/IMG_8509.jpg", alt: "커플 사진 12" },
-    { src: "src/gallery/IMG_8510.jpg", alt: "커플 사진 13" },
-    { src: "src/gallery/IMG_8512.jpg", alt: "커플 사진 14" },
-    { src: "src/gallery/IMG_8513.JPG", alt: "커플 사진 15" },
+    { src: "src/gallery/1.JPG", alt: "커플 사진 1" },
+    { src: "src/gallery/2.jpg", alt: "커플 사진 2" },
+    { src: "src/gallery/3.jpg", alt: "커플 사진 3" },
+    { src: "src/gallery/4.jpg", alt: "커플 사진 4" },
+    { src: "src/gallery/5.JPG", alt: "커플 사진 5" },
+    { src: "src/gallery/6.jpg", alt: "커플 사진 6" },
+    { src: "src/gallery/7.JPG", alt: "커플 사진 7" },
+    { src: "src/gallery/8.JPG", alt: "커플 사진 8" },
+    { src: "src/gallery/9.jpg", alt: "커플 사진 9" },
+    { src: "src/gallery/10.jpg", alt: "커플 사진 10" },
+    { src: "src/gallery/11.jpg", alt: "커플 사진 11" },
+    { src: "src/gallery/12.jpg", alt: "커플 사진 12" },
+    { src: "src/gallery/13.jpg", alt: "커플 사진 13" },
+    { src: "src/gallery/14.jpg", alt: "커플 사진 14" },
+    { src: "src/gallery/15.JPG", alt: "커플 사진 15" },
+    { src: "src/gallery/16.JPG", alt: "커플 사진 16" },
+    { src: "src/gallery/17.JPG", alt: "커플 사진 17" },
+    { src: "src/gallery/18.JPG", alt: "커플 사진 18" },
   ],
 };
 
@@ -273,7 +276,7 @@ function initIcons() {
   if (!sections.length) return;
 
   sections.forEach(function (section) {
-    var photo   = section.querySelector(".scroll-img__photo");
+    var photo = section.querySelector(".scroll-img__photo");
     var caption = section.querySelector(".scroll-img__caption-text");
     if (!photo) return;
 
@@ -302,10 +305,10 @@ function initIcons() {
        레이어 깊이감을 줍니다.                          */
     function tick() {
       var rect = section.getBoundingClientRect();
-      var wh   = window.innerHeight;
+      var wh = window.innerHeight;
       if (rect.bottom < 0 || rect.top > wh) return;
       var progress = (wh - rect.top) / (wh + rect.height); /* 0 → 1 */
-      var shift    = (progress - 0.5) * 48;                /* ±24 px */
+      var shift = (progress - 0.5) * 48; /* ±24 px */
 
       if (photo.classList.contains("is-visible")) {
         photo.style.transform =
