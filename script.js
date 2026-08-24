@@ -1139,3 +1139,35 @@ function initIcons() {
 /* ── INIT LUCIDE ICONS ───────────────────────────────────────*/
 /* Must run last so all data-lucide elements exist in DOM      */
 initIcons();
+const swiper = new Swiper(".infoSwiper", {
+  slidesPerView: 1,
+  spaceBetween: 12,
+  loop: false,
+  navigation: {
+    nextEl: ".swiper-button-next",
+    prevEl: ".swiper-button-prev",
+  },
+  pagination: {
+    el: ".swiper-pagination",
+    type: "fraction", // 분수 형태 (1 / 4)
+
+    // 화면에 표시될 텍스트 형식 지정 (선택사항)
+    formatFractionCurrent: function (number) {
+      return number;
+    },
+    formatFractionTotal: function (number) {
+      return number;
+    },
+    renderFraction: function (currentClass, totalClass) {
+      return (
+        '<span class="' +
+        currentClass +
+        '"></span>' +
+        " / " +
+        '<span class="' +
+        totalClass +
+        '"></span>'
+      );
+    },
+  },
+});

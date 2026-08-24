@@ -63,7 +63,12 @@
 
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-
+    <!-- Swiper CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <link rel="stylesheet" href="style.css?v=20260606" />
   </head>
   <body>
@@ -394,7 +399,70 @@
         </ul>
       </div>
     </section>
+    <!-- ════════════════════════════════════════════
+        Wedding Hall info
+    ════════════════════════════════════════════ -->
+    <section id="hallInfo" class="section section--cool">
+      <div class="container reveal">
+        <header class="section-head">
+          <span class="section-tag">WeddingHall Info</span>
+          <h2>예식장 안내</h2>
+        </header>
 
+        <div class="swiper infoSwiper">
+          <div class="swiper-wrapper">
+            <!-- Card 1: 주차 안내 -->
+            <div class="swiper-slide">
+              <div class="card-image">
+                <img src="src/img/parking.jpg" alt="신부대기실 안내" />
+              </div>
+              <div class="card-body">
+                <div class="card-title">주차 안내</div>
+                <div class="card-content">
+                  주차 안내 요원의 안내에 따라 무료 발렛 서비스를 이용해 주세요.
+                  (150분 무료) 예식 후에는 1층 건물 앞 셔틀버스에 탑승하시면
+                  출차 및 주차 안내를 도와드립니다.
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 2: 신부대기실 안내 -->
+            <div class="swiper-slide">
+              <div class="card-image">
+                <img src="src/img/WaitingRoom.jpg" alt="신부대기실 안내" />
+              </div>
+              <div class="card-body">
+                <div class="card-title">신부대기실 안내</div>
+                <div class="card-content">
+                  신부대기실은 한 층 위인 7층에 있습니다. 6층 예식장에 도착하신
+                  후 한 층 올라오셔서 반갑게 인사 나누어 주세요.
+                </div>
+              </div>
+            </div>
+
+            <!-- Card 3: 연회장 안내 -->
+            <div class="swiper-slide">
+              <div class="card-image">
+                <img src="src/img/dining.jpg" alt="연회장 안내" />
+              </div>
+              <div class="card-body">
+                <div class="card-title">연회장 안내</div>
+                <div class="card-content">
+                  정성껏 준비한 식사는 3층에서 제공됩니다. 예식시간 30분 전부터
+                  2시간 동안 식사하실 수 있으니 편안하게 즐겨주세요.
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 좌우 꺾쇄 화살표 버튼 -->
+          <div class="swiper-control-bar">
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-next"></div>
+          </div>
+        </div>
+      </div>
+    </section>
     <!-- ════════════════════════════════════════════
          ⑤ SHUTTLE BUS / 버스 대절 안내
     ════════════════════════════════════════════ -->
