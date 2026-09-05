@@ -2172,3 +2172,9 @@ legend {
   outline: 2px solid var(--text);
   outline-offset: 3px;
 }
+.bus__intro svg {
+  width: 12px;
+  height: 12px;
+  stroke-width: 1.8;
+  flex-shrink: 0;
+}
